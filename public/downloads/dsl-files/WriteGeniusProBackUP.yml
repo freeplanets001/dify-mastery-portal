@@ -1,0 +1,1044 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: WriteGenius ProBackUP
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/google:0.0.9@d360bbc433f39be1b11909cb9c32e6be4a17ea06af083f9e1c7613bb802bf517
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.29@9e17ae8073fe53c282e9dc411e76a3cc52f8e794e4cc2499d204502086871c53
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/gemini:0.2.6@2a4ffc697957afb7734e7a5cfb780d5c819d216cc6e56798bffb95d28a032867
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables:
+  - description: ''
+    id: 2692709f-cd3c-4bfc-98e1-134b0941b203
+    name: searchformatter
+    selector:
+    - conversation
+    - searchformatter
+    value: ''
+    value_type: string
+  - description: ''
+    id: e0d03c64-d071-461b-a534-313d1914f96b
+    name: var
+    selector:
+    - conversation
+    - var
+    value: ''
+    value_type: string
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: 'それでは以下のテーマの執筆を行います
+
+
+      <button data-message="{{topic}}">{{topic}}の執筆開始</button>
+
+
+      '
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - ''
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757201597715-source-1757201706557-target
+      source: '1757201597715'
+      sourceHandle: source
+      target: '1757201706557'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757201603226-source-1757201706557-target
+      source: '1757201603226'
+      sourceHandle: source
+      target: '1757201706557'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757205186035-source-1757202741736-target
+      source: '1757205186035'
+      sourceHandle: source
+      target: '1757202741736'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: llm
+      id: 1757201828407-source-1757205186035-target
+      source: '1757201828407'
+      sourceHandle: source
+      target: '1757205186035'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757202741736-source-llm-target
+      source: '1757202741736'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: if-else
+      id: llm-source-1757235847671-target
+      source: llm
+      sourceHandle: source
+      target: '1757235847671'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: assigner
+      id: 1757235847671-false-1757235823567-target
+      source: '1757235847671'
+      sourceHandle: 'false'
+      target: '1757235823567'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: assigner
+        targetType: answer
+      id: 1757235823567-source-1757202891022-target
+      source: '1757235823567'
+      sourceHandle: source
+      target: '1757202891022'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1757235847671-true-1757201597715-target
+      source: '1757235847671'
+      sourceHandle: 'true'
+      target: '1757201597715'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1757235847671-true-1757201603226-target
+      source: '1757235847671'
+      sourceHandle: 'true'
+      target: '1757201603226'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1757201366329-source-1757201828407-target
+      source: '1757201366329'
+      sourceHandle: source
+      target: '1757201828407'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757201706557-source-1757240313576-target
+      source: '1757201706557'
+      sourceHandle: source
+      target: '1757240313576'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1757240313576-source-answer-target
+      source: '1757240313576'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables:
+        - label: 執筆したいブログ記事のテーマ
+          max_length: 4000
+          options: []
+          required: true
+          type: paragraph
+          variable: topic
+        - label: 「プログラミング初心者」「30代のワーキングマザー」など
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: target_persona
+        - label: 「専門家風に、権威性高く」「親しみやすく、フレンドリーに」など
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: tone_manner
+        - label: 特に参考にしてほしい競合記事や公式ドキュメントのURL（1行に1URL）
+          max_length: 1000
+          options: []
+          required: false
+          type: paragraph
+          variable: reference_urls
+      height: 168
+      id: '1757201366329'
+      position:
+        x: 30
+        y: 496.5
+      positionAbsolute:
+        x: 30
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: b162d2b4-62c3-4077-b94a-90bccd97d5e5
+          role: system
+          text: '# 命令
+
+            あなたはプロの編集者です。提供されたSEO分析結果とナレッジベースの情報を基に、読者の検索意図を完全に満たし、検索エンジンに最大限評価されるブログ記事の構成案を3つ、全く異なる切り口で作成してください。
+
+
+            # 制約条件
+
+            - SEO分析結果で抽出されたキーワード群を、タイトル案と各見出しに自然な形で盛り込んでください。
+
+            - 上位記事の共通構成を参考にしつつも、それらを超える独自の視点や深掘りした内容を加えてください。
+
+
+            # テーマ
+
+            {{#1757201366329.topic#}}
+
+
+            # SEO分析結果
+
+            {{#1757202741736.text#}}
+
+
+            # 出力形式
+
+            **【構成案1：王道解説パターン】**
+
+            *   タイトル案: ...
+
+            *   この記事が解決する読者の悩み: ...
+
+            *   構成: ...
+
+
+            **【構成案2：具体的事例パターン】**
+
+            *   タイトル案: ...
+
+            *   この記事が解決する読者の悩み: ...
+
+            *   構成: ...
+
+
+            **【構成案3：意外な視点パターン】**
+
+            *   タイトル案: ...
+
+            *   この記事が解決する読者の悩み: ...
+
+            *   構成: ...'
+        selected: false
+        title: 構成案作成
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 1366
+        y: 496.5
+      positionAbsolute:
+        x: 1366
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1757240313576.text#}}'
+        desc: ''
+        selected: false
+        title: 回答
+        type: answer
+        variables: []
+      height: 104
+      id: answer
+      position:
+        x: 3214
+        y: 251.5
+      positionAbsolute:
+        x: 3214
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: gemini-2.5-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: d9a3d0ac-005b-4432-83e4-166b99dc8bb7
+          role: system
+          text: '# 命令
+
+            あなたは世界最高のプロライターです。提供された構成案とあなたの持つ知識を基に、読者の心を動かす完璧なブログ記事の本文を執筆してください。
+
+
+            # 制約条件
+
+            - 全ての読者が理解できるよう、専門用語は避け平易な言葉で説明してください。
+
+            - 具体的な事例やデータを盛り込み、記事の信頼性を高めてください。
+
+            - 読者のエンゲージメントを高めるため、問いかけや共感を誘う表現を適宜使用してください。
+
+            - 必ずマークダウン形式で執筆してください。
+
+
+            # 構成案
+
+            {{#conversation.var#}}
+
+            {{# ユーザーが実際に構成案を選ぶステップを入れる場合は、ここの変数が変わりますが、今回は自動化のため、最初のLLMが生成したものをそのまま使います
+            #}}
+
+            '
+        selected: false
+        title: gemini
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757201597715'
+      position:
+        x: 2214
+        y: 251.5
+      positionAbsolute:
+        x: 2214
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: b46cf924-7392-4d54-8f82-d8242720fef8
+          role: system
+          text: '# 命令
+
+            あなたは世界最高のプロライターです。提供された構成案とあなたの持つ知識を基に、読者の心を動かす完璧なブログ記事の本文を執筆してください。
+
+
+            # 制約条件
+
+            - 全ての読者が理解できるよう、専門用語は避け平易な言葉で説明してください。
+
+            - 具体的な事例やデータを盛り込み、記事の信頼性を高めてください。
+
+            - 読者のエンゲージメントを高めるため、問いかけや共感を誘う表現を適宜使用してください。
+
+            - 必ずマークダウン形式で執筆してください。
+
+
+            # 構成案
+
+            {{#conversation.var#}}
+
+            {{# ユーザーが実際に構成案を選ぶステップを入れる場合は、ここの変数が変わりますが、今回は自動化のため、最初のLLMが生成したものをそのまま使います
+            #}}
+
+            '
+        selected: false
+        title: gpt
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757201603226'
+      position:
+        x: 2214
+        y: 381.5
+      positionAbsolute:
+        x: 2214
+        y: 381.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 3edbe48f-13c6-4720-bfdb-c4b46670e526
+          role: system
+          text: '# 命令
+
+            あなたは熟練の編集長です。以下に提示する2つの記事案（AとB）を比較・検討し、それぞれの優れた点を統合して、世界で最も優れた「究極の1記事」を完成させてください。
+
+
+            # 制約条件
+
+            - 最終的な成果物は、必ずマークダウン形式で出力してください。
+
+            - 誤字脱字や不自然な表現は全て修正してください。
+
+            - ファクトチェックを行い、もし誤った情報があれば修正してください。
+
+            - 全体の構成や流れが最も自然で説得力のある形にしてください。
+
+
+            # 記事案A (GPT-4o)
+
+            {{#1757201603226.text#}}
+
+
+            # 記事案B (gemini)
+
+            {{#1757201597715.text#}}
+
+
+            # 最終成果物（マークダウン形式）'
+        selected: false
+        title: 最終統合
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757201706557'
+      position:
+        x: 2548
+        y: 251.5
+      positionAbsolute:
+        x: 2548
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for searching
+            ja_JP: used for searching
+            pt_BR: used for searching
+            zh_Hans: 用于搜索网页内容
+          label:
+            en_US: Query string
+            ja_JP: Query string
+            pt_BR: Query string
+            zh_Hans: 查询语句
+          llm_description: key words for searching
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            ja_JP: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            pt_BR: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            zh_Hans: 此参数定义用于 Google 搜索的语言。它是一个两字母的语言代码。 (例如，en 代表英语，es 代表西班牙语，fr 代表法语)。请前往
+              https://serpapi.com/google-languages 查看完整的支持 Google 语言列表。
+          label:
+            en_US: Language
+            ja_JP: Language
+            pt_BR: Language
+            zh_Hans: 语言
+          llm_description: Language
+          max: null
+          min: null
+          name: hl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            ja_JP: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            pt_BR: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            zh_Hans: 此参数定义用于 Google 搜索的国家。它是一个两字母的国家代码。 (例如，us 代表美国，uk 代表英国，fr 代表法国)。请前往
+              https://serpapi.com/google-countries 查看完整的支持 Google 国家列表。
+          label:
+            en_US: Country
+            ja_JP: Country
+            pt_BR: Country
+            zh_Hans: 国家
+          llm_description: Country
+          max: null
+          min: null
+          name: gl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            ja_JP: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            pt_BR: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            zh_Hans: 此参数定义搜索的位置。如果有多个位置与请求的位置匹配，我们将选择最受欢迎的一个。如果需要更精确的控制，请前往 /locations.json
+              API。location 和 uule 参数不能同时使用。建议在城市级别指定位置，以模拟真实用户的搜索。如果省略位置，则搜索可能会采用代理的位置。
+          label:
+            en_US: Location
+            ja_JP: Location
+            pt_BR: Location
+            zh_Hans: 位置
+          llm_description: Location
+          max: null
+          min: null
+          name: location
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          gl: ''
+          hl: ''
+          location: ''
+          query: ''
+        provider_id: langgenius/google/google
+        provider_name: langgenius/google/google
+        provider_type: builtin
+        selected: false
+        title: GoogleSearch
+        tool_configurations: {}
+        tool_description: A tool for performing a Google SERP search and extracting
+          snippets and webpages.Input should be a search query.
+        tool_label: GoogleSearch
+        tool_name: google_search
+        tool_parameters:
+          location:
+            type: mixed
+            value: ''
+          query:
+            type: mixed
+            value: '{{#1757201366329.topic#}}'
+        type: tool
+      height: 54
+      id: '1757201828407'
+      position:
+        x: 364
+        y: 496.5
+      positionAbsolute:
+        x: 364
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: b4b1354d-ecf6-4e31-8fa4-43ea46385075
+          role: system
+          text: '# 命令
+
+            あなたは優秀なSEOコンサルタントです。提供されたテーマとWeb検索結果を基に、以下の情報を抽出し、後続のタスクで利用しやすいように整理してください。
+
+
+            # テーマ
+
+            {{#1757201366329.topic#}}
+
+
+            # Web検索結果
+
+            {{#1757205186035.text#}}
+
+
+            # 抽出・分析項目
+
+            1.  **検索意図の特定:** このテーマで検索するユーザーが本当に知りたいことは何か（例：方法、理由、比較、購入）。
+
+            2.  **関連キーワードの抽出:** 上位記事で共通して使われている重要な関連キーワードを5つ抽出。
+
+            3.  **共起語リストの作成:** メインテーマと共に出現頻度の高い単語やフレーズを10個リストアップ。
+
+            4.  **上位記事の共通構成:** 上位3記事に共通する見出しやトピックの傾向を分析。
+
+
+            # 出力
+
+            上記の分析結果を明確にまとめて出力してください。'
+        selected: false
+        title: SEO分析
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757202741736'
+      position:
+        x: 1032
+        y: 496.5
+      positionAbsolute:
+        x: 1032
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: 'SEO分析に基づき、3つの構成案を作成しました。
+
+          執筆に進む構成案の番号を選んでください。
+
+
+          もし修正したい点があれば、その内容を具体的に指示してください。
+
+          （例：「構成案2をベースに、○○のトピックを追加して」）
+
+
+          {{#conversation.var#}}
+
+
+          '
+        desc: ''
+        selected: true
+        title: 回答 2
+        type: answer
+        variables: []
+      height: 184
+      id: '1757202891022'
+      position:
+        x: 2882
+        y: 499.5
+      positionAbsolute:
+        x: 2882
+        y: 499.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 2b8fea6f-0446-422f-9ea4-f7ff6a968065
+          role: system
+          text: '# 命令
+
+            あなたは、与えられた構造化データ（JSON形式）を、後続のAIが処理しやすいように整形する専門のプログラムです。
+
+            以下の「検索結果データ」の中から、各検索結果のタイトル、スニペット、URLを抽出し、テキスト形式でフォーマットしてください。
+
+
+            # 制約条件
+
+            - 各検索結果は、タイトル、スニペット、URLの順でリストアップしてください。
+
+            - 不要な修飾や挨拶は一切含めず、整形されたテキストだけを出力してください。
+
+
+            # 検索結果データ
+
+            {{#1757201828407.json#}}  <-- ★★★ これが正しい変数の指定方法です ★★★
+
+
+            # 出力形式の例
+
+            検索結果1:
+
+            タイトル: 医師が教えます 健康的で効果的なダイエットのしかた
+
+            スニペット: ダイエットの前提として、減量は1か月に1.2kgのスローペースで行うことをおすすめします。 体重を1kg減らすには、およそ7000kcalの削減が必要とされてい
+            ...
+
+            URL: https://www.nhk.or.jp/radio/magazine/article/nradi/nra20230630.html
+
+
+            （以下、全ての検索結果について同様に繰り返す）'
+        selected: false
+        title: 検索結果フォーマッター
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757205186035'
+      position:
+        x: 698
+        y: 496.5
+      positionAbsolute:
+        x: 698
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - llm
+          - text
+          variable_selector:
+          - conversation
+          - var
+          write_mode: over-write
+        selected: false
+        title: 変数代入 2
+        type: assigner
+        version: '2'
+      height: 88
+      id: '1757235823567'
+      position:
+        x: 2549
+        y: 549
+      positionAbsolute:
+        x: 2549
+        y: 549
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: contains
+            id: f3a80f51-9f21-4c6e-99dd-345f8e61052b
+            value: '1'
+            varType: string
+            variable_selector:
+            - sys
+            - query
+          - comparison_operator: contains
+            id: 3efe22c4-7e1c-4c4d-aaa5-447c41574f67
+            value: '2'
+            varType: string
+            variable_selector:
+            - sys
+            - query
+          - comparison_operator: contains
+            id: 43100d62-ed82-44bd-85c7-6c45e11e68e6
+            value: '3'
+            varType: string
+            variable_selector:
+            - sys
+            - query
+          id: 'true'
+          logical_operator: or
+        desc: ''
+        selected: false
+        title: IF/ELSE 2
+        type: if-else
+      height: 178
+      id: '1757235847671'
+      position:
+        x: 1700
+        y: 496.5
+      positionAbsolute:
+        x: 1700
+        y: 496.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 4be2fe77-9fb0-4c81-a3c6-82b7b3b75a14
+          role: system
+          text: '# 命令
+
+            あなたは、完成した記事に参考情報を追記する専門の編集者です。
+
+            提供された「完成記事」をセクションごとに読み、各セクションの内容に最も関連性の高い情報を「参考Web検索結果リスト」の中から1つだけ見つけ出し、そのURLを追記してください。
+
+
+            # 完成記事
+
+            {{#1757201706557.text#}}
+
+
+            # 参考Web検索結果リスト
+
+            {{#1757205186035.text#}}
+
+
+            # 制約条件
+
+            - 各セクションの末尾に `参考URL: [URL]` の形式で追記してください。
+
+            - **【最重要】絶対に、リストに存在しないURLを新しく作り出したり、URLを勝手に変更したりしてはいけません。必ずリスト内のURLをそのままコピー＆ペーストしてください。**
+
+            - もし、どの情報も関連性が低いと判断した場合は、そのセクションには無理にURLを追記する必要はありません。
+
+            - 元の記事の文章は一切変更せず、URLの追記のみを行ってください。
+
+
+            # 最終成果物（マークダウン形式、参考URL追記済み）'
+        selected: false
+        title: URL追記
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757240313576'
+      position:
+        x: 2882
+        y: 251.5
+      positionAbsolute:
+        x: 2882
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -1744
+      y: -33
+      zoom: 0.7

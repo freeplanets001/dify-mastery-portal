@@ -165,19 +165,19 @@ function App() {
       name: "WriteGenius Pro",
       description: "SEO最適化されたブログ記事を自動生成",
       features: ["Google検索連携", "SEO分析", "複数AI統合", "参考URL自動追記"],
-      filename: "WriteGeniusProBackUP.yml"
+      filename: "WriteGenius Pro.yml"
     },
     {
       name: "YouTube Script Pro", 
       description: "バズる動画台本とサムネイルを自動生成",
       features: ["企画立案", "構成作成", "台本執筆", "サムネイル生成"],
-      filename: "Youtube台本制作.yml"
+      filename: "Youtubemaker.yml"
     },
     {
       name: "Image Master AI",
       description: "対話型で理想の画像を生成",
       features: ["対話型インターフェース", "複数AI対応", "プロンプト最適化", "修正機能"],
-      filename: "最強画像ジェネレーター.yml"
+      filename: "imageGenerator.yml"
     }
   ]
 

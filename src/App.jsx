@@ -29,6 +29,12 @@ function App() {
   const [communityEnabled, setCommunityEnabled] = useState(false)
   const [maintenanceMode, setMaintenanceMode] = useState(false)
   const [siteAnnouncement, setSiteAnnouncement] = useState('')
+  
+  // 管理者パネルのモーダル状態
+  const [showUserList, setShowUserList] = useState(false)
+  const [showCodeGenerator, setShowCodeGenerator] = useState(false)
+  const [showContentManager, setShowContentManager] = useState(false)
+  const [generatedCode, setGeneratedCode] = useState('')
 
   // 管理者認証チェック
   const checkAdminStatus = () => {
@@ -175,6 +181,37 @@ function App() {
   const viewManual = (filename) => {
     const url = `/downloads/manuals/${filename}`
     window.open(url, '_blank')
+  }
+
+  // 管理者機能
+  const generatePurchaseCode = () => {
+    const timestamp = Date.now().toString(36).toUpperCase()
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const newCode = `DIFY${timestamp}${random}`
+    setGeneratedCode(newCode)
+  }
+
+  const exportUserData = () => {
+    const users = getUsers()
+    const dataStr = JSON.stringify(users, null, 2)
+    const dataBlob = new Blob([dataStr], {type: 'application/json'})
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `user_data_${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const deleteUser = (userId) => {
+    if (confirm('このユーザーを削除してもよろしいですか？')) {
+      const users = getUsers()
+      const filteredUsers = users.filter(user => user.id !== userId)
+      localStorage.setItem('dify_members', JSON.stringify(filteredUsers))
+      alert('ユーザーを削除しました。')
+    }
   }
 
   const manuals = [
@@ -591,7 +628,7 @@ function App() {
                         />
                         <span>コミュニティタブ表示</span>
                       </label>
-                      <Button size="sm" className="w-full text-xs">
+                      <Button size="sm" className="w-full text-xs" onClick={() => setShowContentManager(true)}>
                         コンテンツ追加
                       </Button>
                     </div>
@@ -611,10 +648,10 @@ function App() {
                       <div className="text-xs text-gray-600">
                         最新登録: {getUsers().length > 0 ? getUsers()[getUsers().length - 1]?.name || '未登録' : '未登録'}
                       </div>
-                      <Button size="sm" className="w-full text-xs">
+                      <Button size="sm" className="w-full text-xs" onClick={() => setShowUserList(true)}>
                         ユーザー一覧
                       </Button>
-                      <Button size="sm" variant="outline" className="w-full text-xs">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => setShowCodeGenerator(true)}>
                         コード生成
                       </Button>
                     </div>
@@ -640,7 +677,7 @@ function App() {
                         />
                         <span>メンテナンスモード</span>
                       </label>
-                      <Button size="sm" variant="outline" className="w-full text-xs">
+                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={exportUserData}>
                         データバックアップ
                       </Button>
                     </div>
@@ -673,6 +710,129 @@ function App() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ユーザー一覧モーダル */}
+      {showUserList && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">ユーザー一覧</h3>
+              <Button variant="outline" onClick={() => setShowUserList(false)}>閉じる</Button>
+            </div>
+            <div className="space-y-4">
+              {getUsers().map((user, index) => (
+                <div key={user.id} className="border rounded-lg p-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <span className="text-sm text-gray-600">名前:</span>
+                      <div className="font-semibold">{user.name}</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">メール:</span>
+                      <div className="font-semibold">{user.email}</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">登録日:</span>
+                      <div className="font-semibold">{new Date(user.registeredAt).toLocaleDateString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">購入者コード:</span>
+                      <div className="font-semibold">{user.purchaseCode || 'DIFY2024MASTER'}</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => deleteUser(user.id)}>
+                      削除
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              {getUsers().length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  登録ユーザーがいません
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* コード生成モーダル */}
+      {showCodeGenerator && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">購入者コード生成</h3>
+              <Button variant="outline" onClick={() => setShowCodeGenerator(false)}>閉じる</Button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">新しい購入者コード</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={generatedCode}
+                    readOnly
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                    placeholder="コードを生成してください"
+                  />
+                  <Button onClick={() => navigator.clipboard.writeText(generatedCode)} disabled={!generatedCode}>
+                    コピー
+                  </Button>
+                </div>
+              </div>
+              <Button onClick={generatePurchaseCode} className="w-full">
+                新しいコードを生成
+              </Button>
+              <div className="text-sm text-gray-600">
+                生成されたコードは新規ユーザーの登録に使用できます。
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* コンテンツ管理モーダル */}
+      {showContentManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">コンテンツ管理</h3>
+              <Button variant="outline" onClick={() => setShowContentManager(false)}>閉じる</Button>
+            </div>
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-semibold mb-2">現在のコンテンツ</h4>
+                <div className="grid gap-2 text-sm">
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>PDFマニュアル</span>
+                    <span className="text-green-600">5ファイル</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>DSLファイル</span>
+                    <span className="text-green-600">3ファイル</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>コミュニティ機能</span>
+                    <span className={communityEnabled ? 'text-green-600' : 'text-red-600'}>
+                      {communityEnabled ? '有効' : '無効'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">将来の機能</h4>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <div>• 新しいPDFマニュアルのアップロード</div>
+                  <div>• DSLファイルの追加・更新</div>
+                  <div>• コンテンツのバージョン管理</div>
+                  <div>• ユーザー別アクセス制御</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

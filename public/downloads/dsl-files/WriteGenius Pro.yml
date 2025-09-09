@@ -1,0 +1,1618 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: WriteGenius Pro
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/google:0.0.9@d360bbc433f39be1b11909cb9c32e6be4a17ea06af083f9e1c7613bb802bf517
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/json_process:0.0.2@dde6d7b676ccdcea89206d29232181a840170c19277d3d978e27cd1e3c92c707
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/gemini:0.2.6@2a4ffc697957afb7734e7a5cfb780d5c819d216cc6e56798bffb95d28a032867
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables:
+  - description: ''
+    id: b089246d-7bab-44b0-afda-d6e1867ebe52
+    name: full_article_content
+    selector:
+    - conversation
+    - full_article_content
+    value: ''
+    value_type: string
+  - description: ''
+    id: 37af6de3-3d68-46d8-8a81-5ccbc05d5d2a
+    name: Assigner
+    selector:
+    - conversation
+    - Assigner
+    value: ''
+    value_type: string
+  - description: ''
+    id: 2709b2e8-cdac-474a-8737-fe16c9a17269
+    name: outline_list
+    selector:
+    - conversation
+    - outline_list
+    value: ''
+    value_type: string
+  - description: ''
+    id: 2692709f-cd3c-4bfc-98e1-134b0941b203
+    name: searchformatter
+    selector:
+    - conversation
+    - searchformatter
+    value: ''
+    value_type: string
+  - description: ''
+    id: e0d03c64-d071-461b-a534-313d1914f96b
+    name: var
+    selector:
+    - conversation
+    - var
+    value: []
+    value_type: array[string]
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: 'それでは以下のテーマの執筆を行います
+
+
+      <button data-message="{{topic}}">{{topic}}の執筆開始</button>
+
+
+      '
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - ''
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: true
+      language: en-US
+      voice: ash
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1757201366329-source-1757201828407-target
+      source: '1757201366329'
+      sourceHandle: source
+      target: '1757201828407'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1757201366329-source-1757242106262-target
+      source: '1757201366329'
+      sourceHandle: source
+      target: '1757242106262'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: llm
+      id: 1757242106262-source-1757241889404-target
+      source: '1757242106262'
+      sourceHandle: source
+      target: '1757241889404'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1757241889404-source-1757245179056-target
+      source: '1757241889404'
+      sourceHandle: source
+      target: '1757245179056'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1757245179056-source-1757244923794-target
+      source: '1757245179056'
+      sourceHandle: source
+      target: '1757244923794'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: loop
+      id: 1757244923794-source-1757245886573-target
+      source: '1757244923794'
+      sourceHandle: source
+      target: '1757245886573'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        sourceType: loop-start
+        targetType: tool
+      id: 1757245886573start-source-1757245946724-target
+      source: 1757245886573start
+      sourceHandle: source
+      target: '1757245946724'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        sourceType: tool
+        targetType: tool
+      id: 1757245946724-source-1757246065157-target
+      source: '1757245946724'
+      sourceHandle: source
+      target: '1757246065157'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        sourceType: tool
+        targetType: llm
+      id: 1757246065157-source-1757245996575-target
+      source: '1757246065157'
+      sourceHandle: source
+      target: '1757245996575'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        sourceType: llm
+        targetType: code
+      id: 1757245996575-source-1757246544759-target
+      source: '1757245996575'
+      sourceHandle: source
+      target: '1757246544759'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        sourceType: code
+        targetType: assigner
+      id: 1757246544759-source-1757247106508-target
+      source: '1757246544759'
+      sourceHandle: source
+      target: '1757247106508'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: loop
+        targetType: llm
+      id: 1757245886573-source-1757247306189-target
+      source: '1757245886573'
+      sourceHandle: source
+      target: '1757247306189'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757247306189-source-1757247530822-target
+      source: '1757247306189'
+      sourceHandle: source
+      target: '1757247530822'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: code
+      id: 1757201828407-source-1757247765729-target
+      source: '1757201828407'
+      sourceHandle: source
+      target: '1757247765729'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1757247765729-source-1757241889404-target
+      source: '1757247765729'
+      sourceHandle: source
+      target: '1757241889404'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1757247530822-source-1757249149428-target
+      source: '1757247530822'
+      sourceHandle: source
+      target: '1757249149428'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1757249149428-source-1757244402104-target
+      source: '1757249149428'
+      sourceHandle: source
+      target: '1757244402104'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables:
+        - label: 執筆したいブログ記事のテーマ
+          max_length: 4000
+          options: []
+          required: true
+          type: paragraph
+          variable: topic
+        - label: 「プログラミング初心者」「30代のワーキングマザー」など
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: target_persona
+        - label: 「専門家風に、権威性高く」「親しみやすく、フレンドリーに」など
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: tone_manner
+        - label: 特に参考にしてほしい競合記事や公式ドキュメントのURL（1行に1URL）
+          max_length: 1000
+          options: []
+          required: false
+          type: paragraph
+          variable: reference_urls
+      height: 168
+      id: '1757201366329'
+      position:
+        x: 30
+        y: 428
+      positionAbsolute:
+        x: 30
+        y: 428
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for searching
+            ja_JP: used for searching
+            pt_BR: used for searching
+            zh_Hans: 用于搜索网页内容
+          label:
+            en_US: Query string
+            ja_JP: Query string
+            pt_BR: Query string
+            zh_Hans: 查询语句
+          llm_description: key words for searching
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            ja_JP: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            pt_BR: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            zh_Hans: 此参数定义用于 Google 搜索的语言。它是一个两字母的语言代码。 (例如，en 代表英语，es 代表西班牙语，fr 代表法语)。请前往
+              https://serpapi.com/google-languages 查看完整的支持 Google 语言列表。
+          label:
+            en_US: Language
+            ja_JP: Language
+            pt_BR: Language
+            zh_Hans: 语言
+          llm_description: Language
+          max: null
+          min: null
+          name: hl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            ja_JP: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            pt_BR: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            zh_Hans: 此参数定义用于 Google 搜索的国家。它是一个两字母的国家代码。 (例如，us 代表美国，uk 代表英国，fr 代表法国)。请前往
+              https://serpapi.com/google-countries 查看完整的支持 Google 国家列表。
+          label:
+            en_US: Country
+            ja_JP: Country
+            pt_BR: Country
+            zh_Hans: 国家
+          llm_description: Country
+          max: null
+          min: null
+          name: gl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            ja_JP: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            pt_BR: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            zh_Hans: 此参数定义搜索的位置。如果有多个位置与请求的位置匹配，我们将选择最受欢迎的一个。如果需要更精确的控制，请前往 /locations.json
+              API。location 和 uule 参数不能同时使用。建议在城市级别指定位置，以模拟真实用户的搜索。如果省略位置，则搜索可能会采用代理的位置。
+          label:
+            en_US: Location
+            ja_JP: Location
+            pt_BR: Location
+            zh_Hans: 位置
+          llm_description: Location
+          max: null
+          min: null
+          name: location
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          gl: ''
+          hl: ''
+          location: ''
+          query: ''
+        provider_id: langgenius/google/google
+        provider_name: langgenius/google/google
+        provider_type: builtin
+        selected: false
+        title: GoogleSearch
+        tool_configurations: {}
+        tool_description: A tool for performing a Google SERP search and extracting
+          snippets and webpages.Input should be a search query.
+        tool_label: GoogleSearch
+        tool_name: google_search
+        tool_parameters:
+          location:
+            type: mixed
+            value: ''
+          query:
+            type: mixed
+            value: '{{#1757201366329.topic#}}'
+        type: tool
+      height: 54
+      id: '1757201828407'
+      position:
+        x: 332
+        y: 608
+      positionAbsolute:
+        x: 332
+        y: 608
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 04dac6f3-26c2-4563-a695-13accc5a49a1
+          role: system
+          text: "# 命令\nあなたは世界トップクラスのSEOストラテジストです。提供されたテーマ、ターゲット読者、参考情報に基づき、競合を圧倒し検索1位を獲得するための完璧なブログ記事執筆戦略を立案してください。\n\
+            \n# 入力情報\n- テーマ: {{#1757201366329.topic#}}\n- ターゲット読者: {{#1757201366329.target_persona#}}\n\
+            - 文体: {{#1757201366329.tone_manner#}}\n- 競合記事のコンテンツ: {{#1757242106262.text#}}\n\
+            - 検索結果サマリー: {{#1757201828407.text#}}\n\n# 出力形式（JSON）\n以下の項目を分析・抽出し、必ずJSON形式で出力してください。\n\
+            {\n  \"search_intent\": \"ユーザーの検索意図の分析結果\",\n  \"keywords\": {\n    \"\
+            primary\": \"メインターゲットキーワード\",\n    \"related\": [\"関連キーワード1\", \"関連キーワード2\"\
+            ],\n    \"long_tail\": [\"ロングテールキーワード1\", \"ロングテールキーワード2\"]\n  },\n  \"\
+            content_gap_analysis\": \"競合記事に欠けているが、読者が求めている情報（コンテンツギャップ）の指摘\",\n  \"\
+            suggested_outline\": [\n    {\"type\": \"H2\", \"title\": \"見出し2-1のタイトル案\"\
+            },\n    {\"type\": \"H3\", \"title\": \"見出し3-1のタイトル案\"},\n    {\"type\"\
+            : \"H2\", \"title\": \"見出し2-2のタイトル案\"}\n  ]\n}"
+        selected: false
+        title: 統合SEOアナライザー
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757241889404'
+      position:
+        x: 936
+        y: 511
+      positionAbsolute:
+        x: 936
+        y: 511
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for linking to webpages
+            ja_JP: used for linking to webpages
+            pt_BR: used for linking to webpages
+            zh_Hans: 用于链接到网页
+          label:
+            en_US: URL
+            ja_JP: URL
+            pt_BR: URL
+            zh_Hans: 网页链接
+          llm_description: url for scraping
+          max: null
+          min: null
+          name: url
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/100.0.1000.0 Safari/537.36
+          form: form
+          human_description:
+            en_US: used for identifying the browser.
+            ja_JP: used for identifying the browser.
+            pt_BR: used for identifying the browser.
+            zh_Hans: 用于识别浏览器。
+          label:
+            en_US: User Agent
+            ja_JP: User Agent
+            pt_BR: User Agent
+            zh_Hans: User Agent
+          llm_description: null
+          max: null
+          min: null
+          name: user_agent
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 'false'
+          form: form
+          human_description:
+            en_US: If true, the crawler will only return the page summary content.
+            ja_JP: If true, the crawler will only return the page summary content.
+            pt_BR: If true, the crawler will only return the page summary content.
+            zh_Hans: 如果启用，爬虫将仅返回页面摘要内容。
+          label:
+            en_US: Whether to generate summary
+            ja_JP: Whether to generate summary
+            pt_BR: Whether to generate summary
+            zh_Hans: 是否生成摘要
+          llm_description: null
+          max: null
+          min: null
+          name: generate_summary
+          options:
+          - label:
+              en_US: 'Yes'
+              ja_JP: 'Yes'
+              pt_BR: 'Yes'
+              zh_Hans: 是
+            value: 'true'
+          - label:
+              en_US: 'No'
+              ja_JP: 'No'
+              pt_BR: 'No'
+              zh_Hans: 否
+            value: 'false'
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        params:
+          generate_summary: ''
+          url: ''
+          user_agent: ''
+        provider_id: webscraper
+        provider_name: webscraper
+        provider_type: builtin
+        selected: true
+        title: Web Scraper
+        tool_configurations:
+          generate_summary: 0
+          user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+            (KHTML, like Gecko) Chrome/100.0.1000.0 Safari/537.36
+        tool_description: A tool for scraping webpages.
+        tool_label: Web Scraper
+        tool_name: webscraper
+        tool_parameters:
+          url:
+            type: mixed
+            value: '{{#1757201366329.reference_urls#}}'
+        type: tool
+      height: 116
+      id: '1757242106262'
+      position:
+        x: 615.4285714285716
+        y: 341.14285714285717
+      positionAbsolute:
+        x: 615.4285714285716
+        y: 341.14285714285717
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1757249149428.formatted_title#}}
+
+
+          {{#1757249149428.formatted_meta#}}
+
+
+          {{#1757249149428.formatted_tags#}}
+
+
+          {{#1757249149428.formatted_body#}}'
+        desc: ''
+        selected: false
+        title: 結果出力
+        type: answer
+        variables: []
+      height: 158
+      id: '1757244402104'
+      position:
+        x: 4890.857142857143
+        y: 452.71428571428567
+      positionAbsolute:
+        x: 4890.857142857143
+        y: 452.71428571428567
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: JSON data
+            ja_JP: JSON data
+            pt_BR: JSON数据
+            zh_Hans: JSON数据
+          label:
+            en_US: JSON data
+            ja_JP: JSON data
+            pt_BR: JSON data
+            zh_Hans: JSON数据
+          llm_description: JSON data to be processed
+          max: null
+          min: null
+          name: content
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: JSON fields to be parsed
+            ja_JP: JSON fields to be parsed
+            pt_BR: JSON fields to be parsed
+            zh_Hans: 需要解析的 JSON 字段
+          label:
+            en_US: JSON filter
+            ja_JP: JSON filter
+            pt_BR: JSON filter
+            zh_Hans: JSON解析对象
+          llm_description: JSON fields to be parsed
+          max: null
+          min: null
+          name: json_filter
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 1
+          form: form
+          human_description:
+            en_US: Ensure the JSON output is ASCII encoded
+            ja_JP: Ensure the JSON output is ASCII encoded
+            pt_BR: Ensure the JSON output is ASCII encoded
+            zh_Hans: 确保输出的 JSON 是 ASCII 编码
+          label:
+            en_US: Ensure ASCII
+            ja_JP: Ensure ASCII
+            pt_BR: Ensure ASCII
+            zh_Hans: 确保 ASCII
+          llm_description: ''
+          max: null
+          min: null
+          name: ensure_ascii
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        params:
+          content: ''
+          ensure_ascii: ''
+          json_filter: ''
+        provider_id: langgenius/json_process/json_process
+        provider_name: langgenius/json_process/json_process
+        provider_type: builtin
+        selected: false
+        title: JSON Parse
+        tool_configurations:
+          ensure_ascii: 0
+        tool_description: A tool for extracting JSON objects
+        tool_label: JSON Parse
+        tool_name: parse
+        tool_parameters:
+          content:
+            type: mixed
+            value: '{{#1757245179056.cleaned_json_string#}}'
+          json_filter:
+            type: mixed
+            value: suggested_outline
+        type: tool
+      height: 90
+      id: '1757244923794'
+      position:
+        x: 1540
+        y: 514.5
+      positionAbsolute:
+        x: 1540
+        y: 514.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\n\ndef main(args):\n    # Dify passes the first input variable\
+          \ directly as the 'args' object.\n    # We ensure it's a string, even if\
+          \ the input is None.\n    raw_text = str(args) if args else \"\"\n    \n\
+          \    # 文字列の中から、最初の '{' の位置を探します。\n    start_index = raw_text.find('{')\n\
+          \    # 文字列の中から、最後の '}' の位置を探します。\n    end_index = raw_text.rfind('}')\n\
+          \    \n    # '{' と '}' が両方見つかり、正しい順序であるかを確認します。\n    if start_index != -1\
+          \ and end_index != -1 and end_index > start_index:\n        # '{' から '}'\
+          \ までを正確に切り出します。\n        cleaned_string = raw_text[start_index : end_index\
+          \ + 1]\n        \n        # 切り出した文字列が有効なJSONかどうかの簡易チェック\n        try:\n\
+          \            json.loads(cleaned_string)\n            # 有効なJSONであれば、そのまま出力します。\n\
+          \            return {\"cleaned_json_string\": cleaned_string}\n        except\
+          \ json.JSONDecodeError:\n            # 切り出しに失敗した場合は、空のJSONオブジェクトを返します。\n\
+          \            return {\"cleaned_json_string\": \"{}\"}\n    \n    # もし見つからなかった場合は、後続のノードがエラーにならないよう、空のJSONオブジェクトを返します。\n\
+          \    return {\"cleaned_json_string\": \"{}\"}"
+        code_language: python3
+        desc: ''
+        outputs:
+          cleaned_json_string:
+            children: null
+            type: string
+        selected: false
+        title: コード実行
+        type: code
+        variables:
+        - value_selector:
+          - '1757241889404'
+          - text
+          variable: args
+      height: 54
+      id: '1757245179056'
+      position:
+        x: 1238
+        y: 484
+      positionAbsolute:
+        x: 1238
+        y: 484
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        break_conditions: []
+        desc: ''
+        error_handle_mode: terminated
+        height: 208
+        logical_operator: and
+        loop_count: 10
+        loop_variables:
+        - id: 4e904c0b-20b3-4e5e-bbc5-06459f0f84ee
+          label: test
+          value:
+          - '1757244923794'
+          - text
+          value_type: variable
+          var_type: string
+        selected: false
+        start_node_id: 1757245886573start
+        title: ループ 2
+        type: loop
+        width: 1742
+      height: 208
+      id: '1757245886573'
+      position:
+        x: 1842
+        y: 467
+      positionAbsolute:
+        x: 1842
+        y: 467
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 1742
+      zIndex: 1
+    - data:
+        desc: ''
+        isInLoop: true
+        selected: false
+        title: ''
+        type: loop-start
+      draggable: false
+      height: 48
+      id: 1757245886573start
+      parentId: '1757245886573'
+      position:
+        x: 60
+        y: 80
+      positionAbsolute:
+        x: 1902
+        y: 547
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-loop-start
+      width: 44
+      zIndex: 1002
+    - data:
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        is_team_authorization: true
+        loop_id: '1757245886573'
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for searching
+            ja_JP: used for searching
+            pt_BR: used for searching
+            zh_Hans: 用于搜索网页内容
+          label:
+            en_US: Query string
+            ja_JP: Query string
+            pt_BR: Query string
+            zh_Hans: 查询语句
+          llm_description: key words for searching
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            ja_JP: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            pt_BR: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            zh_Hans: 此参数定义用于 Google 搜索的语言。它是一个两字母的语言代码。 (例如，en 代表英语，es 代表西班牙语，fr 代表法语)。请前往
+              https://serpapi.com/google-languages 查看完整的支持 Google 语言列表。
+          label:
+            en_US: Language
+            ja_JP: Language
+            pt_BR: Language
+            zh_Hans: 语言
+          llm_description: Language
+          max: null
+          min: null
+          name: hl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            ja_JP: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            pt_BR: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            zh_Hans: 此参数定义用于 Google 搜索的国家。它是一个两字母的国家代码。 (例如，us 代表美国，uk 代表英国，fr 代表法国)。请前往
+              https://serpapi.com/google-countries 查看完整的支持 Google 国家列表。
+          label:
+            en_US: Country
+            ja_JP: Country
+            pt_BR: Country
+            zh_Hans: 国家
+          llm_description: Country
+          max: null
+          min: null
+          name: gl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            ja_JP: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            pt_BR: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            zh_Hans: 此参数定义搜索的位置。如果有多个位置与请求的位置匹配，我们将选择最受欢迎的一个。如果需要更精确的控制，请前往 /locations.json
+              API。location 和 uule 参数不能同时使用。建议在城市级别指定位置，以模拟真实用户的搜索。如果省略位置，则搜索可能会采用代理的位置。
+          label:
+            en_US: Location
+            ja_JP: Location
+            pt_BR: Location
+            zh_Hans: 位置
+          llm_description: Location
+          max: null
+          min: null
+          name: location
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          gl: ''
+          hl: ''
+          location: ''
+          query: ''
+        provider_id: langgenius/google/google
+        provider_name: langgenius/google/google
+        provider_type: builtin
+        selected: false
+        title: GoogleSearch
+        tool_configurations: {}
+        tool_description: A tool for performing a Google SERP search and extracting
+          snippets and webpages.Input should be a search query.
+        tool_label: GoogleSearch
+        tool_name: google_search
+        tool_parameters:
+          query:
+            type: mixed
+            value: '{{#1757245886573.test#}}{{#1757201366329.topic#}}'
+        type: tool
+      height: 54
+      id: '1757245946724'
+      parentId: '1757245886573'
+      position:
+        x: 204
+        y: 78
+      positionAbsolute:
+        x: 2046
+        y: 545
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 2d712216-68c1-458a-bd31-1c1c247bc596
+          role: system
+          text: '# 命令
+
+            あなたは「{{#1757201366329.tone_manner#}}」を完璧に使いこなすプロのライターです。記事全体のテーマとターゲット読者を念頭に、以下の見出しと参考情報に基づき、本文を執筆してください。
+
+
+            # 記事全体のテーマ: {{#1757201366329.topic#}}
+
+            # ターゲット読者: {{#1757201366329.target_persona#}}
+
+            # 執筆する見出し: ## title
+
+            # 参考情報: {{#1757201828407.text#}}
+
+
+            # 制約
+
+            - この見出しに関する内容のみを、マークダウン形式で執筆してください。
+
+            - 導入や結論は不要です。'
+        selected: false
+        title: セクションライター
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757245996575'
+      parentId: '1757245886573'
+      position:
+        x: 808
+        y: 60
+      positionAbsolute:
+        x: 2650
+        y: 527
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        is_team_authorization: true
+        loop_id: '1757245886573'
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: JSON data
+            ja_JP: JSON data
+            pt_BR: JSON数据
+            zh_Hans: JSON数据
+          label:
+            en_US: JSON data
+            ja_JP: JSON data
+            pt_BR: JSON data
+            zh_Hans: JSON数据
+          llm_description: JSON data to be processed
+          max: null
+          min: null
+          name: content
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: JSON fields to be parsed
+            ja_JP: JSON fields to be parsed
+            pt_BR: JSON fields to be parsed
+            zh_Hans: 需要解析的 JSON 字段
+          label:
+            en_US: JSON filter
+            ja_JP: JSON filter
+            pt_BR: JSON filter
+            zh_Hans: JSON解析对象
+          llm_description: JSON fields to be parsed
+          max: null
+          min: null
+          name: json_filter
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 1
+          form: form
+          human_description:
+            en_US: Ensure the JSON output is ASCII encoded
+            ja_JP: Ensure the JSON output is ASCII encoded
+            pt_BR: Ensure the JSON output is ASCII encoded
+            zh_Hans: 确保输出的 JSON 是 ASCII 编码
+          label:
+            en_US: Ensure ASCII
+            ja_JP: Ensure ASCII
+            pt_BR: Ensure ASCII
+            zh_Hans: 确保 ASCII
+          llm_description: ''
+          max: null
+          min: null
+          name: ensure_ascii
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        params:
+          content: ''
+          ensure_ascii: ''
+          json_filter: ''
+        provider_id: langgenius/json_process/json_process
+        provider_name: langgenius/json_process/json_process
+        provider_type: builtin
+        selected: false
+        title: JSON Parse
+        tool_configurations:
+          ensure_ascii: 1
+        tool_description: A tool for extracting JSON objects
+        tool_label: JSON Parse
+        tool_name: parse
+        tool_parameters:
+          content:
+            type: mixed
+            value: '{{#1757244923794.text#}}'
+          json_filter:
+            type: mixed
+            value: title
+        type: tool
+      height: 90
+      id: '1757246065157'
+      parentId: '1757245886573'
+      position:
+        x: 506
+        y: 60
+      positionAbsolute:
+        x: 2348
+        y: 527
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        code: "# Dify passes each input variable as a keyword argument to the function.\n\
+          # The function signature MUST match the input variable names EXACTLY.\n\
+          def main(current_full_text, new_section_text):\n    \n    # これまでの本文を取得。初回ループ（変数がNone）の場合は空文字列にする。\n\
+          \    # Dify passes an empty or undefined variable as None.\n    previous_text\
+          \ = current_full_text or \"\"\n    \n    # 新しく追加するセクションの本文を取得。\n    new_text\
+          \ = new_section_text or \"\"\n    \n    # 2つのテキストを改行で結合する。\n    # If previous_text\
+          \ is empty, don't add extra newlines at the start.\n    if previous_text:\n\
+          \        updated_text = previous_text + \"\\n\\n\" + new_text\n    else:\n\
+          \        updated_text = new_text\n            \n    # 結合した新しい全文を 'updated_full_text'\
+          \ という名前で出力する。\n    return {\"updated_full_text\": updated_text}"
+        code_language: python3
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1757245886573'
+        outputs:
+          updated_full_text:
+            children: null
+            type: string
+        selected: false
+        title: コード実行 2
+        type: code
+        variables:
+        - value_selector:
+          - conversation
+          - full_article_content
+          variable: current_full_text
+        - value_selector:
+          - '1757245996575'
+          - text
+          variable: new_section_text
+      height: 54
+      id: '1757246544759'
+      parentId: '1757245886573'
+      position:
+        x: 1110
+        y: 78
+      positionAbsolute:
+        x: 2952
+        y: 545
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        desc: ''
+        isInIteration: false
+        isInLoop: true
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1757246544759'
+          - updated_full_text
+          variable_selector:
+          - conversation
+          - full_article_content
+          write_mode: over-write
+        loop_id: '1757245886573'
+        selected: false
+        title: 変数代入 2
+        type: assigner
+        version: '2'
+      height: 88
+      id: '1757247106508'
+      parentId: '1757245886573'
+      position:
+        x: 1412
+        y: 61
+      positionAbsolute:
+        x: 3254
+        y: 528
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      zIndex: 1002
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: df7afe2a-5301-4476-9f58-48804d4bd2e8
+          role: system
+          text: "# 命令\nあなたは、世界最高のWebメディア編集長です。\n提供された「記事ドラフト」と「SEO分析データ」に基づき、読者の満足度と検索エンジン評価を最大化する、完璧な最終成果物を生成してください。\n\
+            \n# タスク\n1.  読者の心を掴み、続きを読む気を起こさせる魅力的な導入文を作成してください。\n2.  記事全体の要点を簡潔にまとめ、読者の次の行動を促すような結論を作成してください。\n\
+            3.  記事ドラフトに内容の重複（特に同じテーマの見出し）がある場合は、それらを自然な形で一つに統合・再構成してください。\n4.  全体の流れがスムーズになるように、接続詞や段落の構成を調整し、適切な小見出しを追加してください。\n\
+            5.  誤字脱字や不自然な日本語表現を全て修正してください。\n6.  SEO分析データに基づき、以下のメタ情報を生成してください。\n \
+            \   - クリックしたくなるようなタイトル案を3つ\n    - 記事の内容を要約した120文字程度のメタディスクリプション\n    -\
+            \ 関連性の高いタグのリストを5つ\n\n# 記事ドラフト\n{{#conversation.full_article_content#}}\
+            \ <-- (1) ここを設定します\n\n# SEO分析データ\n{{#1757241889404.text#}}<-- (2) ここを設定します\n\
+            \n# 出力形式（必ずこの形式に従ってください）\n---\ntitle_1: [タイトル案1]\ntitle_2: [タイトル案2]\n\
+            title_3: [タイトル案3]\nmeta_description: [メタディスクリプション]\ntags: [タグ1, タグ2, タグ3,\
+            \ タグ4, タグ5]\n---\n\n（ここに完成した記事本文をマークダウン形式で記述）"
+        selected: false
+        title: 最終編集長
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757247306189'
+      position:
+        x: 3644
+        y: 467
+      positionAbsolute:
+        x: 3644
+        y: 467
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: d3d3a016-0095-47c6-90e9-ea7d05428f80
+          role: system
+          text: '# 命令
+
+            あなたは、完成した記事の信頼性を向上させるため、各セクションの内容に最も合致する参考情報の出典URLを追記する、高度なAI編集者です。
+
+
+            # 前提条件
+
+            - これから提示する「完成記事」は、後述の「参考Web検索結果リスト」の情報を基に執筆されました。
+
+            - あなたのタスクは、記事の**すべてのH2およびH3見出しのセクション**を個別に評価し、その内容と最も関連性の高い検索結果をリストから探し出し、引用としてURLを追記することです。
+
+
+            # 完成記事
+
+            {{#1757247306189.text#}}
+
+
+            # 参考Web検索結果リスト
+
+            {{#1757247765729.formatted_results#}}
+
+
+            # 実行手順
+
+            1.  完成記事を上から順に読み、H2またはH3で始まるセクションを見つけます。
+
+            2.  そのセクションの本文の内容を要約し、キーワードを抽出します。
+
+            3.  抽出したキーワードと最も関連性の高い情報を「参考Web検索結果リスト」のスニペットから探し出します。
+
+            4.  最も合致すると判断した検索結果のURLを、そのセクションの**末尾**に追記します。
+
+            5.  すべてのセクションに対して、この手順を繰り返します。
+
+
+            # 制約条件
+
+            - URLは、各セクションの末尾に `[参考: (URL)]` という形式で追記してください。
+
+            - **【最重要】** 引用するURLは、必ず「参考Web検索結果リスト」に記載されているURLを**そのままコピー＆ペースト**してください。絶対にURLを新しく作り出したり、変更したりしてはいけません。
+
+            - 複数の検索結果が関連している場合でも、最も関連性が高いと判断した**単一のURL**のみを追記してください。
+
+            - どの検索結果も関連性が低いと判断したセクションには、無理にURLを追記しないでください。
+
+            - 元の記事の文章や構成は一切変更せず、URLの追記のみを行ってください。
+
+            - 記事冒頭のメタ情報（title_1など）は変更せず、本文にのみURLを追記してください。
+
+
+            # 最終成果物（各セクションに参考URLが追記された、完全な記事）'
+        selected: false
+        title: 引用タスク
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1757247530822'
+      position:
+        x: 3946
+        y: 467
+      positionAbsolute:
+        x: 3946
+        y: 467
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\n\ndef main(search_results):\n    # DifyはGoogle Searchの結果をリストとして渡す\n\
+          \    if not isinstance(search_results, list):\n        search_results =\
+          \ []\n    \n    all_organic_results = []\n    # search_resultsリストの全ての要素をチェックする\n\
+          \    for page_result in search_results:\n        if isinstance(page_result,\
+          \ dict):\n            # 'organic_results'キーの中にあるリストを取得し、all_organic_resultsに追加\n\
+          \            organic_results = page_result.get('organic_results', [])\n\
+          \            all_organic_results.extend(organic_results)\n\n    formatted_string\
+          \ = \"\"\n    # 抽出した全てのオーガニック検索結果をループ処理する\n    for i, result in enumerate(all_organic_results,\
+          \ 1):\n        title = result.get('title', 'No Title')\n        link = result.get('link',\
+          \ 'No URL')\n        snippet = result.get('snippet', 'No Snippet').replace('\\\
+          n', ' ')\n        \n        formatted_string += f\"【検索結果 {i}】\\n\"\n   \
+          \     formatted_string += f\"タイトル: {title}\\n\"\n        formatted_string\
+          \ += f\"URL: {link}\\n\"\n        formatted_string += f\"スニペット: {snippet}\\\
+          n\\n\"\n    \n    if not formatted_string:\n        formatted_string = \"\
+          利用可能な検索結果がありませんでした。\"\n\n    return {\"formatted_results\": formatted_string}"
+        code_language: python3
+        desc: ''
+        outputs:
+          formatted_results:
+            children: null
+            type: string
+        selected: false
+        title: 検索結果フォーマッター
+        type: code
+        variables:
+        - value_selector:
+          - '1757201828407'
+          - json
+          variable: search_results
+      height: 54
+      id: '1757247765729'
+      position:
+        x: 634
+        y: 608
+      positionAbsolute:
+        x: 634
+        y: 608
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import re\n\ndef main(final_article_text):\n    # デフォルト値を設定\n    title_1\
+          \ = \"（タイトル案1がありません）\"\n    title_2 = \"（タイトル案2がありません）\"\n    title_3 =\
+          \ \"（タイトル案3がありません）\"\n    meta_description = \"（メタディスクリプションがありません）\"\n \
+          \   tags = \"（タグがありません）\"\n    body = final_article_text\n\n    # --- で区切られたメタ情報ブロックを探す\n\
+          \    match = re.search(r'---\\s*(.*?)\\s*---', final_article_text, re.DOTALL)\n\
+          \    if match:\n        meta_block = match.group(1)\n        body = final_article_text[match.end(0):].strip()\n\
+          \n        # 各メタ情報を抽出\n        title_1_match = re.search(r'title_1:\\s*(.*)',\
+          \ meta_block)\n        if title_1_match: title_1 = title_1_match.group(1).strip()\n\
+          \n        title_2_match = re.search(r'title_2:\\s*(.*)', meta_block)\n \
+          \       if title_2_match: title_2 = title_2_match.group(1).strip()\n\n \
+          \       title_3_match = re.search(r'title_3:\\s*(.*)', meta_block)\n   \
+          \     if title_3_match: title_3 = title_3_match.group(1).strip()\n\n   \
+          \     meta_desc_match = re.search(r'meta_description:\\s*(.*)', meta_block)\n\
+          \        if meta_desc_match: meta_description = meta_desc_match.group(1).strip()\n\
+          \n        tags_match = re.search(r'tags:\\s*\\[(.*)\\]', meta_block)\n \
+          \       if tags_match:\n            tags_list = [tag.strip() for tag in\
+          \ tags_match.group(1).split(',')]\n            tags = \" \".join([f\"`{tag}`\"\
+          \ for tag in tags_list])\n\n    # 整形した文字列を作成\n    formatted_title = f\"\
+          ### \U0001F4A1 タイトル案\\n1. {title_1}\\n2. {title_2}\\n3. {title_3}\"\n  \
+          \  formatted_meta = f\"### \U0001F4DD メタディスクリプション\\n{meta_description}\"\
+          \n    formatted_tags = f\"### \U0001F3F7️ 推奨タグ\\n{tags}\"\n    formatted_body\
+          \ = f\"---\\n\\n{body}\"\n\n    # 4つの独立した出力変数として結果を返す\n    return {\n  \
+          \      \"formatted_title\": formatted_title,\n        \"formatted_meta\"\
+          : formatted_meta,\n        \"formatted_tags\": formatted_tags,\n       \
+          \ \"formatted_body\": formatted_body\n    }"
+        code_language: python3
+        desc: ''
+        outputs:
+          formatted_body:
+            children: null
+            type: string
+          formatted_meta:
+            children: null
+            type: string
+          formatted_tags:
+            children: null
+            type: string
+          formatted_title:
+            children: null
+            type: string
+        selected: false
+        title: 最終フォーマッター
+        type: code
+        variables:
+        - value_selector:
+          - '1757247530822'
+          - text
+          variable: final_article_text
+      height: 54
+      id: '1757249149428'
+      position:
+        x: 4590.857142857143
+        y: 452.71428571428567
+      positionAbsolute:
+        x: 4590.857142857143
+        y: 452.71428571428567
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 25.199999999999477
+      y: 41.450000000000045
+      zoom: 0.7

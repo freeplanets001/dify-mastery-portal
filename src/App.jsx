@@ -8,17 +8,23 @@ import './App.css'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [showLoginForm, setShowLoginForm] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
   const [showRegisterForm, setShowRegisterForm] = useState(false)
-  const [loginData, setLoginData] = useState({ email: '', password: '' })
-  const [registerData, setRegisterData] = useState({ 
-    name: '', 
-    email: '', 
-    password: '', 
+  const [showLoginForm, setShowLoginForm] = useState(false)
+  const [registerData, setRegisterData] = useState({
+    name: '',
+    email: '',
+    password: '',
     confirmPassword: '',
     purchaseCode: ''
   })
-  const [currentUser, setCurrentUser] = useState(null)
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  })
+  
+  // コミュニティ機能の表示制御（管理者設定）
+  const [communityEnabled, setCommunityEnabled] = useState(false) // 現在は非表示
 
   // ローカルストレージから会員データを取得
   const getUsers = () => {
@@ -102,6 +108,12 @@ function App() {
     document.body.removeChild(link)
   }
 
+  // マニュアル表示機能
+  const viewManual = (filename) => {
+    const url = `/downloads/manuals/${filename}`
+    window.open(url, '_blank')
+  }
+
   const manuals = [
     {
       id: 1,
@@ -165,19 +177,22 @@ function App() {
       name: "WriteGenius Pro",
       description: "SEO最適化されたブログ記事を自動生成",
       features: ["Google検索連携", "SEO分析", "複数AI統合", "参考URL自動追記"],
-      filename: "WriteGenius Pro.yml"
+      filename: "WriteGeniusPro.yml",
+      manualFilename: "writegenius_pro_master_guide.pdf"
     },
     {
       name: "YouTube Script Pro", 
       description: "バズる動画台本とサムネイルを自動生成",
       features: ["企画立案", "構成作成", "台本執筆", "サムネイル生成"],
-      filename: "Youtubemaker.yml"
+      filename: "Youtubemaker.yml",
+      manualFilename: "youtube_script_pro_master_guide.pdf"
     },
     {
       name: "Image Master AI",
       description: "対話型で理想の画像を生成",
       features: ["対話型インターフェース", "複数AI対応", "プロンプト最適化", "修正機能"],
-      filename: "imageGenerator.yml"
+      filename: "imageGenerator.yml",
+      manualFilename: "image_master_ai_master_guide.pdf"
     }
   ]
 
@@ -435,10 +450,10 @@ function App() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="manuals" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className={`grid w-full ${communityEnabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <TabsTrigger value="manuals">マニュアル一覧</TabsTrigger>
             <TabsTrigger value="apps">DSLファイル</TabsTrigger>
-            <TabsTrigger value="community">コミュニティ</TabsTrigger>
+            {communityEnabled && <TabsTrigger value="community">コミュニティ</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="manuals" className="mt-8">
@@ -514,7 +529,11 @@ function App() {
                         <Download className="w-4 h-4 mr-2" />
                         DSLファイルダウンロード
                       </Button>
-                      <Button variant="outline" className="w-full">
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => viewManual(app.manualFilename)}
+                      >
                         <BookOpen className="w-4 h-4 mr-2" />
                         マニュアルを見る
                       </Button>
@@ -525,49 +544,100 @@ function App() {
             </div>
           </TabsContent>
 
-          <TabsContent value="community" className="mt-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">コミュニティ</h2>
-              <p className="text-gray-600">購入者限定の特別サポート</p>
-            </div>
+          {communityEnabled && (
+            <TabsContent value="community" className="mt-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">コミュニティ</h2>
+                <p className="text-gray-600">購入者限定の特別サポート</p>
+              </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    購入者限定コミュニティ
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Slackワークスペースで他の購入者と情報交換、質問、共同開発が可能です。
-                  </p>
-                  <Button className="w-full">
-                    Slackに参加
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      購入者限定コミュニティ
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      Slackワークスペースで他の購入者と情報交換、質問、共同開発が可能です。
+                    </p>
+                    <Button className="w-full">
+                      Slackに参加
+                    </Button>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5" />
-                    個別コンサルティング
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    30分の無料個別コンサルティングで、あなたの課題を直接解決します。
-                  </p>
-                  <Button className="w-full">
-                    予約する
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5" />
+                      個別コンサルティング
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      30分の無料個別コンサルティングで、あなたの課題を直接解決します。
+                    </p>
+                    <Button className="w-full">
+                      予約する
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      月次ウェビナー
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      毎月開催される限定ウェビナーで最新のDIFY活用法を学べます。
+                    </p>
+                    <Button className="w-full">
+                      次回予定を確認
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Download className="w-5 h-5" />
+                      限定リソース
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">
+                      コミュニティメンバー限定のテンプレートやツールをダウンロードできます。
+                    </p>
+                    <Button className="w-full">
+                      リソースを見る
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
+
+        {/* 管理者用：コミュニティ機能切り替え（開発時のみ表示） */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">管理者設定（開発環境のみ）</h3>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={communityEnabled}
+                onChange={(e) => setCommunityEnabled(e.target.checked)}
+              />
+              <span>コミュニティタブを表示する</span>
+            </label>
+          </div>
+        )}
       </div>
     </div>
   )

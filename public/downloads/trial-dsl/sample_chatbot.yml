@@ -1,0 +1,116 @@
+app:
+  description: "トライアル版サンプルチャットボット - 基本的な質問応答ができるAIアシスタント"
+  icon: "🤖"
+  icon_background: "#3B82F6"
+  mode: chat
+  name: "サンプルAIアシスタント（トライアル版）"
+kind: app
+version: 0.1.2
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+    opening_statement: "こんにちは！私はサンプルAIアシスタントです。何でもお気軽にご質問ください。"
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - "DIFYとは何ですか？"
+    - "AIアプリの作り方を教えて"
+    - "プログラミング初心者でも使えますか？"
+    - "どんなアプリが作れますか？"
+    suggested_questions_after_answer:
+      enabled: true
+    text_to_speech:
+      enabled: false
+      language: ""
+      voice: ""
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: 1735566234567-source-1735566234568-target
+      source: "1735566234567"
+      sourceHandle: source
+      target: "1735566234568"
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ""
+        selected: false
+        title: "開始"
+        type: start
+        variables: []
+      height: 54
+      id: "1735566234567"
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ""
+        model:
+          completion_params:
+            temperature: 0.7
+            top_p: 0.9
+            max_tokens: 1000
+          mode: chat
+          name: gpt-3.5-turbo
+          provider: openai
+        prompt_template:
+        - id: "1735566234569"
+          role: system
+          text: |
+            あなたは親切で知識豊富なAIアシスタントです。
+            
+            以下のルールに従って回答してください：
+            1. 常に日本語で回答する
+            2. 丁寧で分かりやすい説明を心がける
+            3. 質問の内容に応じて適切な情報を提供する
+            4. 不明な点があれば正直に「分からない」と答える
+            5. DIFYに関する質問には特に詳しく答える
+            
+            ユーザーの質問に対して、親切で有用な回答を提供してください。
+        selected: false
+        title: "AIアシスタント"
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 98
+      id: "1735566234568"
+      position:
+        x: 384
+        y: 282
+      positionAbsolute:
+        x: 384
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+

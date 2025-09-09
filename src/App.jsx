@@ -765,7 +765,7 @@ function App() {
                 <CheckCircle className="w-3 h-3 mr-1" />
                 認証済み
               </Badge>
-              {isAdmin && (
+              {currentUser?.purchaseCode === 'ADMIN2024MASTER' && (
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -788,7 +788,7 @@ function App() {
       </header>
 
       {/* 管理者パネル */}
-      {isAdmin && showAdminPanel && (
+      {currentUser?.purchaseCode === 'ADMIN2024MASTER' && showAdminPanel && (
         <div className="bg-red-50 border-b border-red-200">
           <div className="container mx-auto px-4 py-6">
             <div className="bg-white rounded-lg shadow-sm border border-red-200 p-6">

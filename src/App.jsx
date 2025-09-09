@@ -11,6 +11,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null)
   const [showRegisterForm, setShowRegisterForm] = useState(false)
   const [showLoginForm, setShowLoginForm] = useState(false)
+  const [showTrialForm, setShowTrialForm] = useState(false)
   const [registerData, setRegisterData] = useState({
     name: '',
     email: '',
@@ -21,6 +22,11 @@ function App() {
   const [loginData, setLoginData] = useState({
     email: '',
     password: ''
+  })
+  const [trialData, setTrialData] = useState({
+    name: '',
+    email: '',
+    experience: ''
   })
   
   // 管理者機能の状態管理
@@ -82,6 +88,12 @@ function App() {
     return users ? JSON.parse(users) : []
   }
 
+  // トライアルユーザーデータを取得
+  const getTrialUsers = () => {
+    const trialUsers = localStorage.getItem('dify_trial_users')
+    return trialUsers ? JSON.parse(trialUsers) : []
+  }
+
   // 会員データを保存
   const saveUser = (userData) => {
     const users = getUsers()
@@ -89,13 +101,61 @@ function App() {
     localStorage.setItem('dify_members', JSON.stringify(users))
   }
 
+  // トライアルユーザーを保存
+  const saveTrialUser = (trialUserData) => {
+    const trialUsers = getTrialUsers()
+    trialUsers.push(trialUserData)
+    localStorage.setItem('dify_trial_users', JSON.stringify(trialUsers))
+  }
+
+  // トライアル期間チェック
+  const checkTrialAccess = (user) => {
+    if (!user || user.type !== 'trial') return { allowed: false, reason: 'not_trial' }
+    
+    const now = new Date()
+    const endDate = new Date(user.endDate)
+    
+    if (now > endDate) {
+      return { allowed: false, reason: 'trial_expired' }
+    }
+    
+    return { allowed: true, remainingDays: Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)) }
+  }
+
+  // トライアルコンテンツアクセス制御
+  const canAccessTrialContent = (contentId) => {
+    if (!currentUser || currentUser.type !== 'trial') return false
+    
+    const trialContent = ['dify_intro_guide', 'sample_chatbot_dsl']
+    return trialContent.includes(contentId)
+  }
+
   // ログイン処理
   const handleLogin = (e) => {
     e.preventDefault()
     const users = getUsers()
-    const user = users.find(u => u.email === loginData.email && u.password === loginData.password)
+    const trialUsers = getTrialUsers()
+    
+    // 正規ユーザーをチェック
+    let user = users.find(u => u.email === loginData.email && u.password === loginData.password)
+    
+    // トライアルユーザーをチェック
+    if (!user) {
+      user = trialUsers.find(u => u.email === loginData.email && u.password === loginData.password)
+    }
     
     if (user) {
+      // トライアルユーザーの場合、期限チェック
+      if (user.type === 'trial') {
+        const accessCheck = checkTrialAccess(user)
+        if (!accessCheck.allowed) {
+          if (accessCheck.reason === 'trial_expired') {
+            alert('トライアル期間が終了しました。正規版をご購入ください。')
+            return
+          }
+        }
+      }
+      
       setIsLoggedIn(true)
       setCurrentUser(user)
       setShowLoginForm(false)
@@ -161,6 +221,49 @@ function App() {
     }, 100)
   }
 
+  // トライアル登録処理
+  const handleTrialRegister = (e) => {
+    e.preventDefault()
+    
+    // バリデーション
+    if (!trialData.name || !trialData.email || !trialData.experience) {
+      alert('すべての項目を入力してください。')
+      return
+    }
+
+    const users = getUsers()
+    const trialUsers = getTrialUsers()
+    
+    // 既存ユーザーチェック
+    if (users.find(u => u.email === trialData.email) || trialUsers.find(u => u.email === trialData.email)) {
+      alert('このメールアドレスは既に登録されています。')
+      return
+    }
+
+    // トライアルユーザー作成
+    const trialUser = {
+      id: 'trial_' + Date.now(),
+      type: 'trial',
+      name: trialData.name,
+      email: trialData.email,
+      password: 'trial_' + Math.random().toString(36).substring(2, 8), // 自動生成パスワード
+      experience: trialData.experience,
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日後
+      registeredAt: new Date().toISOString(),
+      downloadCount: 0,
+      maxDownloads: 1
+    }
+
+    saveTrialUser(trialUser)
+    setIsLoggedIn(true)
+    setCurrentUser(trialUser)
+    setShowTrialForm(false)
+    setTrialData({ name: '', email: '', experience: '' })
+    
+    alert(`トライアル登録が完了しました！\n自動生成パスワード: ${trialUser.password}\n\n3日間、限定コンテンツをお楽しみください。`)
+  }
+
   // ログアウト処理
   const handleLogout = () => {
     setIsLoggedIn(false)
@@ -212,6 +315,37 @@ function App() {
       localStorage.setItem('dify_members', JSON.stringify(filteredUsers))
       alert('ユーザーを削除しました。')
     }
+  }
+
+  // トライアル専用コンテンツ
+  const trialContent = {
+    manuals: [
+      {
+        id: 'dify_intro_guide',
+        title: "DIFY入門ガイド（体験版）",
+        description: "DIFYの基本概念と簡単な使い方",
+        category: "入門",
+        pages: "約10ページ",
+        level: "初心者",
+        icon: <BookOpen className="w-6 h-6" />,
+        color: "bg-green-500",
+        filename: "dify_intro_trial.pdf",
+        isTrial: true
+      }
+    ],
+    dslFiles: [
+      {
+        id: 'sample_chatbot_dsl',
+        title: "サンプルチャットボット",
+        description: "基本的なチャットボットのDSLファイル",
+        category: "サンプル",
+        difficulty: "初級",
+        icon: <Zap className="w-6 h-6" />,
+        color: "bg-green-500",
+        filename: "sample_chatbot.yml",
+        isTrial: true
+      }
+    ]
   }
 
   const manuals = [
@@ -336,6 +470,13 @@ function App() {
                 className="border-purple-400 text-purple-300 hover:bg-purple-600 hover:text-white px-8 py-3 text-lg"
               >
                 新規会員登録
+              </Button>
+              <Button 
+                onClick={() => setShowTrialForm(true)}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
+              >
+                <Star className="w-5 h-5 mr-2" />
+                3日間無料トライアル
               </Button>
             </div>
           </div>
@@ -513,6 +654,82 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* トライアル登録フォーム */}
+        {showTrialForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md mx-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-green-600" />
+                  3日間無料トライアル
+                </CardTitle>
+                <CardDescription>
+                  限定コンテンツを3日間無料でお試しいただけます
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleTrialRegister} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">お名前</label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={trialData.name}
+                      onChange={(e) => setTrialData({...trialData, name: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">メールアドレス</label>
+                    <input
+                      type="email"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={trialData.email}
+                      onChange={(e) => setTrialData({...trialData, email: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">DIFYの経験レベル</label>
+                    <select
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={trialData.experience}
+                      onChange={(e) => setTrialData({...trialData, experience: e.target.value})}
+                    >
+                      <option value="">選択してください</option>
+                      <option value="beginner">初心者（DIFYを触ったことがない）</option>
+                      <option value="basic">基本レベル（少し触ったことがある）</option>
+                      <option value="intermediate">中級レベル（ある程度使える）</option>
+                      <option value="advanced">上級レベル（かなり詳しい）</option>
+                    </select>
+                  </div>
+                  <div className="bg-green-50 p-3 rounded-md">
+                    <h4 className="font-semibold text-green-800 mb-2">トライアル内容</h4>
+                    <ul className="text-sm text-green-700 space-y-1">
+                      <li>• DIFY入門ガイド（10ページ）</li>
+                      <li>• サンプルチャットボットDSL</li>
+                      <li>• 3日間の限定アクセス</li>
+                    </ul>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="submit" className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                      無料トライアル開始
+                    </button>
+                    <button 
+                      type="button" 
+                      className="border border-gray-300 py-2 px-4 rounded-md hover:bg-gray-50"
+                      onClick={() => setShowTrialForm(false)}
+                    >
+                      キャンセル
+                    </button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     )
   }
@@ -533,6 +750,17 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {currentUser?.type === 'trial' && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                    <Star className="w-3 h-3 mr-1" />
+                    トライアル
+                  </Badge>
+                  <span className="text-sm text-gray-600">
+                    残り{checkTrialAccess(currentUser).remainingDays}日
+                  </span>
+                </div>
+              )}
               <Badge variant="secondary" className="bg-green-100 text-green-800">
                 <CheckCircle className="w-3 h-3 mr-1" />
                 認証済み
@@ -864,11 +1092,84 @@ function App() {
               <p className="text-gray-600">世界最強レベルのDIFYマニュアルコレクション</p>
             </div>
 
+            {/* トライアルユーザー向けコンテンツ */}
+            {currentUser?.type === 'trial' && (
+              <div className="mb-8">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-green-800 mb-2">
+                    🎉 トライアル限定コンテンツ
+                  </h3>
+                  <p className="text-green-700 text-sm">
+                    3日間の無料トライアル期間中にお楽しみいただけるコンテンツです。
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  {trialContent.manuals.map((manual, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow border-green-200">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className={`w-12 h-12 ${manual.color} rounded-lg flex items-center justify-center text-white`}>
+                            {manual.icon}
+                          </div>
+                          <Badge variant="outline" className="bg-green-100 text-green-800">
+                            {manual.category}
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-lg">{manual.title}</CardTitle>
+                        <CardDescription>{manual.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">ページ数:</span>
+                            <span className="font-medium">{manual.pages}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">対象レベル:</span>
+                            <span className="font-medium">{manual.level}</span>
+                          </div>
+                        </div>
+                        <Button 
+                          className="w-full bg-green-600 hover:bg-green-700"
+                          onClick={() => downloadFile(manual.filename, 'trial')}
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          PDFダウンロード
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                    💎 正規版で利用可能なコンテンツ
+                  </h3>
+                  <p className="text-blue-700 text-sm mb-3">
+                    正規版をご購入いただくと、以下の全コンテンツにアクセスできます。
+                  </p>
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => window.open('https://coconala.com', '_blank')}
+                  >
+                    正規版を購入する
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* 正規ユーザー向けコンテンツまたはトライアルユーザーのプレビュー */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {manuals.map((manual) => (
-                <Card key={manual.id} className="hover:shadow-lg transition-shadow">
+              {manuals.map((manual, index) => (
+                <Card 
+                  key={index} 
+                  className={`hover:shadow-lg transition-shadow ${
+                    currentUser?.type === 'trial' ? 'opacity-60' : ''
+                  }`}
+                >
                   <CardHeader>
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center justify-between mb-2">
                       <div className={`w-12 h-12 ${manual.color} rounded-lg flex items-center justify-center text-white`}>
                         {manual.icon}
                       </div>
@@ -891,9 +1192,10 @@ function App() {
                     <Button 
                       className="w-full"
                       onClick={() => downloadFile(manual.filename, 'manuals')}
+                      disabled={currentUser?.type === 'trial'}
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      PDFダウンロード
+                      {currentUser?.type === 'trial' ? '正規版限定' : 'PDFダウンロード'}
                     </Button>
                   </CardContent>
                 </Card>
@@ -907,9 +1209,63 @@ function App() {
               <p className="text-gray-600">すぐに使える実用DIFYアプリ</p>
             </div>
 
+            {/* トライアルユーザー向けDSLコンテンツ */}
+            {currentUser?.type === 'trial' && (
+              <div className="mb-8">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-green-800 mb-2">
+                    🎉 トライアル限定DSLファイル
+                  </h3>
+                  <p className="text-green-700 text-sm">
+                    3日間の無料トライアル期間中にお試しいただけるサンプルDSLファイルです。
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  {trialContent.dslFiles.map((dsl, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow border-green-200">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className={`w-12 h-12 ${dsl.color} rounded-lg flex items-center justify-center text-white`}>
+                            {dsl.icon}
+                          </div>
+                          <Badge variant="outline" className="bg-green-100 text-green-800">
+                            {dsl.category}
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-lg">{dsl.title}</CardTitle>
+                        <CardDescription>{dsl.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">難易度:</span>
+                            <span className="font-medium">{dsl.difficulty}</span>
+                          </div>
+                        </div>
+                        <Button 
+                          className="w-full bg-green-600 hover:bg-green-700"
+                          onClick={() => downloadFile(dsl.filename, 'trial-dsl')}
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          DSLファイルダウンロード
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 正規ユーザー向けDSLコンテンツまたはトライアルユーザーのプレビュー */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {dslApps.map((app, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card 
+                  key={index} 
+                  className={`hover:shadow-lg transition-shadow ${
+                    currentUser?.type === 'trial' ? 'opacity-60' : ''
+                  }`}
+                >
                   <CardHeader>
                     <CardTitle className="text-lg">{app.name}</CardTitle>
                     <CardDescription>{app.description}</CardDescription>
@@ -927,17 +1283,19 @@ function App() {
                       <Button 
                         className="w-full"
                         onClick={() => downloadFile(app.filename, 'dsl-files')}
+                        disabled={currentUser?.type === 'trial'}
                       >
                         <Download className="w-4 h-4 mr-2" />
-                        DSLファイルダウンロード
+                        {currentUser?.type === 'trial' ? '正規版限定' : 'DSLファイルダウンロード'}
                       </Button>
                       <Button 
                         variant="outline" 
                         className="w-full"
                         onClick={() => viewManual(app.manualFilename)}
+                        disabled={currentUser?.type === 'trial'}
                       >
                         <BookOpen className="w-4 h-4 mr-2" />
-                        マニュアルを見る
+                        {currentUser?.type === 'trial' ? '正規版限定' : 'マニュアルを見る'}
                       </Button>
                     </div>
                   </CardContent>

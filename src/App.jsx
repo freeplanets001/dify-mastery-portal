@@ -329,7 +329,7 @@ function App() {
         level: "初心者",
         icon: <BookOpen className="w-6 h-6" />,
         color: "bg-green-500",
-        filename: "dify_intro_trial.pdf",
+        filename: "dify_trial_guide.pdf",
         isTrial: true
       }
     ],

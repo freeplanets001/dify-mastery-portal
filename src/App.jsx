@@ -118,7 +118,7 @@ function App() {
       return
     }
     
-    if (registerData.purchaseCode !== 'DIFY2024MASTER') {
+    if (registerData.purchaseCode !== 'DIFY2024MASTER' && registerData.purchaseCode !== 'ADMIN2024MASTER') {
       alert('購入者コードが正しくありません。')
       return
     }
@@ -135,6 +135,7 @@ function App() {
       name: registerData.name,
       email: registerData.email,
       password: registerData.password,
+      purchaseCode: registerData.purchaseCode,
       registeredAt: new Date().toISOString()
     }
 
@@ -143,6 +144,15 @@ function App() {
     setCurrentUser(newUser)
     setShowRegisterForm(false)
     setRegisterData({ name: '', email: '', password: '', confirmPassword: '', purchaseCode: '' })
+    
+    // 管理者チェック
+    setTimeout(() => {
+      const adminStatus = checkAdminStatus()
+      setIsAdmin(adminStatus)
+      if (adminStatus) {
+        localStorage.setItem('isAdmin', 'true')
+      }
+    }, 100)
   }
 
   // ログアウト処理

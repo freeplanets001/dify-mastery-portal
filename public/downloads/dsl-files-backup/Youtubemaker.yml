@@ -1,0 +1,1152 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: Youtube台本制作
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/google:0.0.9@d360bbc433f39be1b11909cb9c32e6be4a17ea06af083f9e1c7613bb802bf517
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/stability:0.0.2@cccacbc21775ed15a0aab416ca3374d06c185bef2a0fbb9e687b9ec7312d85cd
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/gemini:0.2.6@2a4ffc697957afb7734e7a5cfb780d5c819d216cc6e56798bffb95d28a032867
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: bowenliang123/md_exporter:1.8.0@aa15ca94651e608fa2defef440cc5bbd22884053168bd2d41d132d5d1b021129
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300003977-source-1757300081946-target
+      source: '1757300003977'
+      sourceHandle: source
+      target: '1757300081946'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300081946-source-1757300130347-target
+      source: '1757300081946'
+      sourceHandle: source
+      target: '1757300130347'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300130347-source-1757300221285-target
+      source: '1757300130347'
+      sourceHandle: source
+      target: '1757300221285'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300221285-source-1757300284437-target
+      source: '1757300221285'
+      sourceHandle: source
+      target: '1757300284437'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300284437-source-1757300328609-target
+      source: '1757300284437'
+      sourceHandle: source
+      target: '1757300328609'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: tool
+      id: 1757300395342-source-1757301752185-target
+      source: '1757300395342'
+      sourceHandle: source
+      target: '1757301752185'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: end
+      id: 1757301752185-source-1757300356044-target
+      source: '1757301752185'
+      sourceHandle: source
+      target: '1757300356044'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1757299648057-source-1757301961135-target
+      source: '1757299648057'
+      sourceHandle: source
+      target: '1757301961135'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: llm
+      id: 1757301961135-source-1757301979186-target
+      source: '1757301961135'
+      sourceHandle: source
+      target: '1757301979186'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757301979186-source-1757300003977-target
+      source: '1757301979186'
+      sourceHandle: source
+      target: '1757300003977'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1757300328609-source-1757303312851-target
+      source: '1757300328609'
+      sourceHandle: source
+      target: '1757303312851'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: tool
+      id: 1757303312851-source-1757303573979-target
+      source: '1757303312851'
+      sourceHandle: source
+      target: '1757303573979'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: template-transform
+      id: 1757303573979-source-1757300395342-target
+      source: '1757303573979'
+      sourceHandle: source
+      target: '1757300395342'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 開始
+        type: start
+        variables:
+        - label: 動画のテーマ
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: VideoTopic
+        - label: ターゲット視聴者
+          max_length: 500
+          options: []
+          required: true
+          type: paragraph
+          variable: targetuser
+        - label: 動画の長さ
+          max_length: 1000
+          options: []
+          required: true
+          type: paragraph
+          variable: movielen
+        - label: 動画の構成テンプレート
+          max_length: 1000
+          options: []
+          required: true
+          type: paragraph
+          variable: videotemplate
+        - label: 動画のトーン
+          max_length: 1000
+          options: []
+          required: true
+          type: paragraph
+          variable: tone
+        - label: 演者のペルソナ
+          max_length: 1000
+          options: []
+          required: true
+          type: paragraph
+          variable: pelsona
+        - label: 視聴者にしてほしい行動（CTA）
+          max_length: 1000
+          options: []
+          required: true
+          type: paragraph
+          variable: cta
+      height: 244
+      id: '1757299648057'
+      position:
+        x: -351.42857142857144
+        y: 282
+      positionAbsolute:
+        x: -351.42857142857144
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 5c5c2627-755a-48e7-b019-550219072801
+          role: system
+          text: "      あなたは一流のYouTubeプロデューサーです。以下の「極秘リサーチ資料」と「要件」に基づき、これから作成する動画の成功に向けた「基本戦略」を定義してください。\n\
+            \n      # 極秘リサーチ資料\n      {{#1757301979186.text#}}\n\n      # 要件\n   \
+            \   - テーマ: {{#1757299648057.VideoTopic#}}\n      - ターゲット: {{#1757299648057.targetuser#}}\n\
+            \      - トーン: {{#1757299648057.tone#}}\n\n      # 出力\n      この動画がターゲットに刺さるための「コアメッセージ」と「動画のゴール（視聴後、視聴者にどうなってほしいか）」を簡潔に定義してください。"
+        selected: false
+        title: 戦略プランナーAI
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300003977'
+      position:
+        x: 932
+        y: 322
+      positionAbsolute:
+        x: 932
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 5d5c3213-5d29-47cc-abb6-8389a21fc3b1
+          role: system
+          text: "      あなたは構成作家です。戦略プランナーが定義した基本戦略と、指定された\n  構成テンプレートに基づき、動画全体の詳細な構成案を作成してください。動画\n\
+            \  の長さに応じて、各セクションの時間配分も考慮してください。\n\n      # 基本戦略\n      {{#1757300003977.text#}}\n\
+            \n      # 要件\n      - 構成テンプレート:{{#1757299648057.videotemplate#}}\n   \
+            \   - 動画の長さ: {{#1757299648057.movielen#}}\n\n      # 出力形式\n      以下の形式で、動画の構成案を箇条書きで出力してください。各セクション\n\
+            \  で何を話すかを具体的に記述してください。\n      - 導入 (約15秒): [このセクションで話す内容の要約]\n      -\
+            \ [セクション2のタイトル]: [このセクションで話す内容を記述]\n      - [セクション3のタイトル]: [このセクションで話す内容を記述]\n\
+            \      - まとめとCTA (約30秒): [このセクションで話す内容を記述]"
+        selected: false
+        title: 構成作家AI
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300081946'
+      position:
+        x: 1234
+        y: 322
+      positionAbsolute:
+        x: 1234
+        y: 322
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 397c4cd4-06d2-409e-82d1-f2d2d39bdef0
+          role: system
+          text: "      あなたは視聴者の心を3秒で掴む天才コピーライターです。以下の動画の基\n  本戦略に基づき、視聴者が「何これ面白そう！」と釘付けになるような、最強の\n\
+            \  導入文（ナレーションまたはセリフ）を3パターン提案してください。\n\n      # 動画の基本戦略\n      {{#1757300003977.text#}}\n\
+            \n      # 出力\n      - パターンA: [衝撃的な事実や質問から入る導入文]\n      - パターンB: [視聴者の悩みに共感する導入文]\n\
+            \      - パターンC: [意外な結論や未来を提示する導入文]"
+        selected: false
+        title: 神フックライターAI
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300130347'
+      position:
+        x: 1536
+        y: 322
+      positionAbsolute:
+        x: 1536
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 52394657-c752-41b5-a1a5-443e215cbd2e
+          role: system
+          text: "      あなたはプロの脚本家です。以下の構成案と、導入文のアイデアを元に、高\n  品質なYouTube動画の台本を完成させてください。セリフ、ナレーション、そし\n\
+            \  て画面に表示するテロップや画像の指示（任意）も含めてください。\n      特に、以下の「演者のペルソナ」になりきって、そのキャラクターに合った\n\
+            \  口調や言葉遣いで台本を作成してください。\n\n      # 詳細な構成案\n      {{#1757300081946.text#}}\n\
+            \n      # 導入文のアイデア（この中から最も効果的なものを1つ選び、冒頭に配置\n  してください）\n      {{#1757300130347.text#}}\n\
+            \n      # 演者のペルソナ\n      {{#1757299648057.pelsona#}}\n\n      # 最後に視聴者にしてほしい行動（CTA）\n\
+            \      {{#1757299648057.cta#}}\n\n      # 出力形式\n      以下の形式で、完全な台本を出力してください。\n\
+            \      ---\n      [シーン1: 導入]\n      ナレーション: ...\n      テロップ: ...\n\n \
+            \     [シーン2: (構成案に沿ったタイトル)]\n      セリフ: ...\n      ナレーション: ...\n     \
+            \ ---"
+        selected: false
+        title: メイン脚本家AI
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300221285'
+      position:
+        x: 1838
+        y: 322
+      positionAbsolute:
+        x: 1838
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: fb086e56-1f34-4040-a27d-6c251ffc4575
+          role: system
+          text: "あなたはプロのサウンドデザイナーです。以下の完成台本を読み、各シーンの雰\n  囲気を盛り上げるための「BGM」と「効果音（SE）」を提案してください。\n\
+            \n          # 完成台本\n          {{#1757300221285.text#}}\n\n          #\
+            \ 出力形式\n          以下の形式で、シーンごとに提案を記述してください。\n          ---\n         \
+            \ [シーン1: 導入]\n          - BGM: [緊迫感のあるシネマティック音楽]\n          - SE: [心臓の鼓動、タイピング音]"
+        selected: false
+        title: サウンドデザイナー
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300284437'
+      position:
+        x: 2140
+        y: 322
+      positionAbsolute:
+        x: 2140
+        y: 322
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 7ced930f-b4a2-4bdf-abfc-e8360d1c0e8a
+          role: system
+          text: "  あなたはバズる動画を仕掛けるプロのマーケターです。完成した台本とテーマに\n  基づき、クリック率とSEOを最大化するための以下の要素を提案してください。\n\
+            \n          # 完成台本\n          {{#1757300221285.text#}}\n\n          #\
+            \ 出力\n          【動画タイトル案（3つ）】\n          1. ...\n          2. ...\n  \
+            \        3. ...\n\n          【推奨タグ（10個）】\n          タグ1, タグ2, ...\n\n\
+            \          【サムネイルのアイデア（2つ）】\n          1. [人物の表情と大きなテキストを組み合わせたデザイン]\n\
+            \          2. [動画の最も衝撃的な瞬間を切り取ったデザイン]"
+        selected: false
+        title: バズマーケター
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757300328609'
+      position:
+        x: 2442
+        y: 322
+      positionAbsolute:
+        x: 2442
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1757300395342'
+          - output
+          variable: result
+        - value_selector:
+          - '1757301752185'
+          - files
+          variable: markdown
+        - value_selector:
+          - '1757303573979'
+          - files
+          variable: image
+        selected: false
+        title: 終了
+        type: end
+      height: 140
+      id: '1757300356044'
+      position:
+        x: 4295.142857142857
+        y: 299.1428571428571
+      positionAbsolute:
+        x: 4295.142857142857
+        y: 299.1428571428571
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        desc: ''
+        selected: false
+        template: "### テキスト\r\n| 内容 |\r\n|------|\r\n| {{ text }} |\r\n\r\n### 完成台本\r\
+          \n| 内容 |\r\n|------|\r\n| {{ text_1 }} |\r\n\r\n### BGM・効果音 提案\r\n| 内容 |\r\
+          \n|------|\r\n| {{ text_2 }} |\r\n"
+        title: テンプレート
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1757300328609'
+          - text
+          variable: text
+        - value_selector:
+          - '1757300221285'
+          - text
+          variable: text_1
+        - value_selector:
+          - '1757300284437'
+          - text
+          variable: text_2
+      height: 52
+      id: '1757300395342'
+      position:
+        x: 3449.714285714286
+        y: 332
+      positionAbsolute:
+        x: 3449.714285714286
+        y: 332
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Markdown text
+            ja_JP: Markdown text
+            pt_BR: Markdown text
+            zh_Hans: Markdown格式文本
+          label:
+            en_US: Markdown text
+            ja_JP: Markdown text
+            pt_BR: Markdown text
+            zh_Hans: Markdown格式文本
+          llm_description: ''
+          max: null
+          min: null
+          name: md_text
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Filename of the output file
+            ja_JP: Filename of the output file
+            pt_BR: Filename of the output file
+            zh_Hans: 输出文件名
+          label:
+            en_US: Filename of the output file
+            ja_JP: Filename of the output file
+            pt_BR: Filename of the output file
+            zh_Hans: 输出文件名
+          llm_description: ''
+          max: null
+          min: null
+          name: output_filename
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          md_text: ''
+          output_filename: ''
+        provider_id: bowenliang123/md_exporter/md_exporter
+        provider_name: bowenliang123/md_exporter/md_exporter
+        provider_type: builtin
+        selected: false
+        title: Markdown to md file
+        tool_configurations: {}
+        tool_description: Generate .md file from Markdown text
+        tool_label: Markdown to md file
+        tool_name: md_to_md
+        tool_parameters:
+          md_text:
+            type: mixed
+            value: '{{#1757300395342.output#}}'
+          output_filename:
+            type: mixed
+            value: '{{#1757299648057.VideoTopic#}}'
+        type: tool
+      height: 52
+      id: '1757301752185'
+      position:
+        x: 3937.4285714285716
+        y: 322
+      positionAbsolute:
+        x: 3937.4285714285716
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for searching
+            ja_JP: used for searching
+            pt_BR: used for searching
+            zh_Hans: 用于搜索网页内容
+          label:
+            en_US: Query string
+            ja_JP: Query string
+            pt_BR: Query string
+            zh_Hans: 查询语句
+          llm_description: key words for searching
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            ja_JP: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            pt_BR: Parameter defines the language to use for the Google search. It's
+              a two-letter language code. (e.g., en for English, es for Spanish, or
+              fr for French). Head to https://serpapi.com/google-languages for a full
+              list of supported Google languages.
+            zh_Hans: 此参数定义用于 Google 搜索的语言。它是一个两字母的语言代码。 (例如，en 代表英语，es 代表西班牙语，fr 代表法语)。请前往
+              https://serpapi.com/google-languages 查看完整的支持 Google 语言列表。
+          label:
+            en_US: Language
+            ja_JP: Language
+            pt_BR: Language
+            zh_Hans: 语言
+          llm_description: Language
+          max: null
+          min: null
+          name: hl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            ja_JP: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            pt_BR: Parameter defines the country to use for the Google search. It's
+              a two-letter country code. (e.g., us for the United States, uk for United
+              Kingdom, or fr for France). Head to the https://serpapi.com/google-countries
+              for a full list of supported Google countries.
+            zh_Hans: 此参数定义用于 Google 搜索的国家。它是一个两字母的国家代码。 (例如，us 代表美国，uk 代表英国，fr 代表法国)。请前往
+              https://serpapi.com/google-countries 查看完整的支持 Google 国家列表。
+          label:
+            en_US: Country
+            ja_JP: Country
+            pt_BR: Country
+            zh_Hans: 国家
+          llm_description: Country
+          max: null
+          min: null
+          name: gl
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            ja_JP: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            pt_BR: Parameter defines from where you want the search to originate.
+              If several locations match the location requested, we'll pick the most
+              popular one. Head to the /locations.json API if you need more precise
+              control. The location and uule parameters can't be used together. It
+              is recommended to specify location at the city level in order to simulate
+              a real user’s search. If location is omitted, the search may take on
+              the location of the proxy.
+            zh_Hans: 此参数定义搜索的位置。如果有多个位置与请求的位置匹配，我们将选择最受欢迎的一个。如果需要更精确的控制，请前往 /locations.json
+              API。location 和 uule 参数不能同时使用。建议在城市级别指定位置，以模拟真实用户的搜索。如果省略位置，则搜索可能会采用代理的位置。
+          label:
+            en_US: Location
+            ja_JP: Location
+            pt_BR: Location
+            zh_Hans: 位置
+          llm_description: Location
+          max: null
+          min: null
+          name: location
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          gl: ''
+          hl: ''
+          location: ''
+          query: ''
+        provider_id: langgenius/google/google
+        provider_name: langgenius/google/google
+        provider_type: builtin
+        selected: false
+        title: GoogleSearch
+        tool_configurations: {}
+        tool_description: A tool for performing a Google SERP search and extracting
+          snippets and webpages.Input should be a search query.
+        tool_label: GoogleSearch
+        tool_name: google_search
+        tool_parameters:
+          query:
+            type: mixed
+            value: '{{#1757299648057.VideoTopic#}}'
+        type: tool
+      height: 52
+      id: '1757301961135'
+      position:
+        x: 46.28571428571428
+        y: 299.1428571428571
+      positionAbsolute:
+        x: 46.28571428571428
+        y: 299.1428571428571
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 3a48794e-695b-4931-8055-9e47bebec3a5
+          role: system
+          text: "          あなたは一流のマーケットリサーチャーです。以下のWeb検索結果を分析し、ユーザーが入力した動画テーマ「{{#1757299648057.VideoTopic#}}」について、現在話題になっているトピック、人々が検索している関\n\
+            \  連キーワード、そして競合動画がどのような切り口で成功しているかを要約してください。\n          この分析結果を、後続のAIチームが最高の台本を作るための「極秘資料」として提供します。\n\
+            \n          # Web検索結果\n          {{#1757301961135.text#}}\n\n        \
+            \  # 出力\n          要点をまとめた、簡潔なリサーチレポートを生成してください。"
+        selected: false
+        title: トレンド分析AI
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757301979186'
+      position:
+        x: 349.1428571428572
+        y: 322
+      positionAbsolute:
+        x: 349.1428571428572
+        y: 322
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash
+          provider: langgenius/gemini/google
+        prompt_template:
+        - id: 83f3acea-4f53-40d6-9753-87124dd17366
+          role: system
+          text: "  あなたはプロのプロンプトデザイナーです。以下のマーケターが考えた「サムネイルのアイデア」の中から、最も魅力的でクリックされそうなものを1つだけ選び、StableDiffusionで最高の画像を生成するための、詳細な英語のプロンプトに変換してください。\n\
+            \n  # サムネイルのアイデア\n   {{#1757300328609.text#}}\n\n  # 指示\n  - 人物の表情、構図、背景などを、英語で具体的に記述してください。\n\
+            \  - 重要: サムネイルに含めるべきテキストは、日本語のままプロンプトに含めてください。例えば、「A dramatic image of\
+            \ a person looking shocked, with the Japanese text \"衝撃の事実\" in a large,\n\
+            \  bold, red font in the foreground.」のように、英語の指示の中に日本語を組み込んでください。\n  -\
+            \ あなたの回答は、StableDiffusionに渡す、この特別な形式の英語プロンプトだけにしてください。"
+        selected: true
+        title: AIサムネイルアーティスト
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 88
+      id: '1757303312851'
+      position:
+        x: 2749.7142857142853
+        y: 322
+      positionAbsolute:
+        x: 2749.7142857142853
+        y: 322
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: used for generating images
+            ja_JP: used for generating images
+            pt_BR: used for generating images
+            zh_Hans: 用于生成图像
+          label:
+            en_US: Prompt
+            ja_JP: Prompt
+            pt_BR: Prompt
+            zh_Hans: 提示词
+          llm_description: key words for generating images
+          max: null
+          min: null
+          name: prompt
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: sd3-turbo
+          form: form
+          human_description:
+            en_US: Model for generating images
+            ja_JP: Model for generating images
+            pt_BR: Model for generating images
+            zh_Hans: 用于生成图像的模型
+          label:
+            en_US: Model
+            ja_JP: Model
+            pt_BR: Model
+            zh_Hans: 模型
+          llm_description: Model for generating images
+          max: null
+          min: null
+          name: model
+          options:
+          - label:
+              en_US: Core
+              ja_JP: Core
+              pt_BR: Core
+              zh_Hans: Core
+            value: core
+          - label:
+              en_US: Stable Diffusion 3
+              ja_JP: Stable Diffusion 3
+              pt_BR: Stable Diffusion 3
+              zh_Hans: Stable Diffusion 3
+            value: sd3
+          - label:
+              en_US: Stable Diffusion 3 Turbo
+              ja_JP: Stable Diffusion 3 Turbo
+              pt_BR: Stable Diffusion 3 Turbo
+              zh_Hans: Stable Diffusion 3 Turbo
+            value: sd3-turbo
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: bad art, ugly, deformed, watermark, duplicated, discontinuous lines
+          form: form
+          human_description:
+            en_US: Negative Prompt
+            ja_JP: Negative Prompt
+            pt_BR: Negative Prompt
+            zh_Hans: 负面提示
+          label:
+            en_US: Negative Prompt
+            ja_JP: Negative Prompt
+            pt_BR: Negative Prompt
+            zh_Hans: 负面提示
+          llm_description: Negative Prompt
+          max: null
+          min: null
+          name: negative_prompt
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 0
+          form: form
+          human_description:
+            en_US: Seeds
+            ja_JP: Seeds
+            pt_BR: Seeds
+            zh_Hans: 种子
+          label:
+            en_US: Seeds
+            ja_JP: Seeds
+            pt_BR: Seeds
+            zh_Hans: 种子
+          llm_description: Seeds
+          max: 4294967294
+          min: 0
+          name: seeds
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: '16:9'
+          form: form
+          human_description:
+            en_US: Aspect Ratio
+            ja_JP: Aspect Ratio
+            pt_BR: Aspect Ratio
+            zh_Hans: 长宽比
+          label:
+            en_US: Aspect Ratio
+            ja_JP: Aspect Ratio
+            pt_BR: Aspect Ratio
+            zh_Hans: 长宽比
+          llm_description: Aspect Ratio
+          max: null
+          min: null
+          name: aspect_ratio
+          options:
+          - label:
+              en_US: '16:9'
+              ja_JP: '16:9'
+              pt_BR: '16:9'
+              zh_Hans: '16:9'
+            value: '16:9'
+          - label:
+              en_US: '1:1'
+              ja_JP: '1:1'
+              pt_BR: '1:1'
+              zh_Hans: '1:1'
+            value: '1:1'
+          - label:
+              en_US: '21:9'
+              ja_JP: '21:9'
+              pt_BR: '21:9'
+              zh_Hans: '21:9'
+            value: '21:9'
+          - label:
+              en_US: '2:3'
+              ja_JP: '2:3'
+              pt_BR: '2:3'
+              zh_Hans: '2:3'
+            value: '2:3'
+          - label:
+              en_US: '4:5'
+              ja_JP: '4:5'
+              pt_BR: '4:5'
+              zh_Hans: '4:5'
+            value: '4:5'
+          - label:
+              en_US: '5:4'
+              ja_JP: '5:4'
+              pt_BR: '5:4'
+              zh_Hans: '5:4'
+            value: '5:4'
+          - label:
+              en_US: '9:16'
+              ja_JP: '9:16'
+              pt_BR: '9:16'
+              zh_Hans: '9:16'
+            value: '9:16'
+          - label:
+              en_US: '9:21'
+              ja_JP: '9:21'
+              pt_BR: '9:21'
+              zh_Hans: '9:21'
+            value: '9:21'
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        params:
+          aspect_ratio: ''
+          model: ''
+          negative_prompt: ''
+          prompt: ''
+          seeds: ''
+        provider_id: langgenius/stability/stability
+        provider_name: langgenius/stability/stability
+        provider_type: builtin
+        selected: false
+        title: StableDiffusion
+        tool_configurations:
+          aspect_ratio: '16:9'
+          model: sd3-turbo
+          negative_prompt: bad art, ugly, deformed, watermark, duplicated, discontinuous
+            lines
+          seeds: 2
+        tool_description: A tool for generate images based on the text input
+        tool_label: StableDiffusion
+        tool_name: stability_text2image
+        tool_parameters:
+          prompt:
+            type: mixed
+            value: '{{#1757303312851.text#}}'
+        type: tool
+      height: 166
+      id: '1757303573979'
+      position:
+        x: 3071.4434378487726
+        y: 389.99999455043235
+      positionAbsolute:
+        x: 3071.4434378487726
+        y: 389.99999455043235
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: -1787
+      y: 127.00000000000006
+      zoom: 0.7

@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import { BookOpen, Download, Users, Star, Lock, CheckCircle, ArrowRight, Zap, Target, Trophy } from 'lucide-react'
+import { BookOpen, Download, Users, Star, Lock, CheckCircle, ArrowRight, Zap, Target, Trophy, Settings, BarChart3, Shield, Database } from 'lucide-react'
 import './App.css'
 
 function App() {
@@ -23,8 +23,52 @@ function App() {
     password: ''
   })
   
-  // コミュニティ機能の表示制御（管理者設定）
-  const [communityEnabled, setCommunityEnabled] = useState(false) // 現在は非表示
+  // 管理者機能の状態管理
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
+  const [communityEnabled, setCommunityEnabled] = useState(false)
+  const [maintenanceMode, setMaintenanceMode] = useState(false)
+  const [siteAnnouncement, setSiteAnnouncement] = useState('')
+
+  // 管理者認証チェック
+  const checkAdminStatus = () => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const adminParam = urlParams.get('admin')
+    const adminStorage = localStorage.getItem('isAdmin')
+    const adminCode = currentUser?.purchaseCode === 'ADMIN2024MASTER'
+    
+    return adminParam === 'true' || adminStorage === 'true' || adminCode
+  }
+
+  // 初期化時に管理者状態をチェック
+  useEffect(() => {
+    const adminStatus = checkAdminStatus()
+    setIsAdmin(adminStatus)
+    if (adminStatus) {
+      localStorage.setItem('isAdmin', 'true')
+    }
+    
+    // 設定の読み込み
+    const savedCommunityEnabled = localStorage.getItem('communityEnabled')
+    const savedMaintenanceMode = localStorage.getItem('maintenanceMode')
+    const savedAnnouncement = localStorage.getItem('siteAnnouncement')
+    
+    if (savedCommunityEnabled) setCommunityEnabled(JSON.parse(savedCommunityEnabled))
+    if (savedMaintenanceMode) setMaintenanceMode(JSON.parse(savedMaintenanceMode))
+    if (savedAnnouncement) setSiteAnnouncement(savedAnnouncement)
+  }, [currentUser])
+
+  // 設定の保存
+  const saveAdminSettings = () => {
+    localStorage.setItem('communityEnabled', JSON.stringify(communityEnabled))
+    localStorage.setItem('maintenanceMode', JSON.stringify(maintenanceMode))
+    localStorage.setItem('siteAnnouncement', siteAnnouncement)
+  }
+
+  // 設定変更時に自動保存
+  useEffect(() => {
+    saveAdminSettings()
+  }, [communityEnabled, maintenanceMode, siteAnnouncement])
 
   // ローカルストレージから会員データを取得
   const getUsers = () => {
@@ -50,6 +94,15 @@ function App() {
       setCurrentUser(user)
       setShowLoginForm(false)
       setLoginData({ email: '', password: '' })
+      
+      // 管理者チェック
+      setTimeout(() => {
+        const adminStatus = checkAdminStatus()
+        setIsAdmin(adminStatus)
+        if (adminStatus) {
+          localStorage.setItem('isAdmin', 'true')
+        }
+      }, 100)
     } else {
       alert('メールアドレスまたはパスワードが正しくありません。')
     }
@@ -437,6 +490,17 @@ function App() {
                 <CheckCircle className="w-3 h-3 mr-1" />
                 認証済み
               </Badge>
+              {isAdmin && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowAdminPanel(!showAdminPanel)}
+                  className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                >
+                  <Settings className="w-4 h-4 mr-1" />
+                  管理者
+                </Button>
+              )}
               <Button 
                 variant="outline" 
                 onClick={handleLogout}
@@ -447,6 +511,174 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* 管理者パネル */}
+      {isAdmin && showAdminPanel && (
+        <div className="bg-red-50 border-b border-red-200">
+          <div className="container mx-auto px-4 py-6">
+            <div className="bg-white rounded-lg shadow-sm border border-red-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-red-800 flex items-center gap-2">
+                  <Shield className="w-6 h-6" />
+                  管理者ダッシュボード
+                </h2>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowAdminPanel(false)}
+                >
+                  閉じる
+                </Button>
+              </div>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {/* システム統計 */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4" />
+                      システム統計
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>登録ユーザー:</span>
+                        <span className="font-semibold">{getUsers().length}名</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>コミュニティ:</span>
+                        <span className={`font-semibold ${communityEnabled ? 'text-green-600' : 'text-red-600'}`}>
+                          {communityEnabled ? 'ON' : 'OFF'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>メンテナンス:</span>
+                        <span className={`font-semibold ${maintenanceMode ? 'text-red-600' : 'text-green-600'}`}>
+                          {maintenanceMode ? 'ON' : 'OFF'}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* コンテンツ管理 */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      コンテンツ管理
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={communityEnabled}
+                          onChange={(e) => setCommunityEnabled(e.target.checked)}
+                          className="rounded"
+                        />
+                        <span>コミュニティタブ表示</span>
+                      </label>
+                      <Button size="sm" className="w-full text-xs">
+                        コンテンツ追加
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* ユーザー管理 */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      ユーザー管理
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="text-xs text-gray-600">
+                        最新登録: {getUsers().length > 0 ? getUsers()[getUsers().length - 1]?.name || '未登録' : '未登録'}
+                      </div>
+                      <Button size="sm" className="w-full text-xs">
+                        ユーザー一覧
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full text-xs">
+                        コード生成
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* システム設定 */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Database className="w-4 h-4" />
+                      システム設定
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={maintenanceMode}
+                          onChange={(e) => setMaintenanceMode(e.target.checked)}
+                          className="rounded"
+                        />
+                        <span>メンテナンスモード</span>
+                      </label>
+                      <Button size="sm" variant="outline" className="w-full text-xs">
+                        データバックアップ
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* お知らせ設定 */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">サイトお知らせ設定</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <textarea
+                      placeholder="サイト上部に表示するお知らせを入力してください..."
+                      value={siteAnnouncement}
+                      onChange={(e) => setSiteAnnouncement(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                      rows="2"
+                    />
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={saveAdminSettings}>
+                        設定保存
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setSiteAnnouncement('')}>
+                        クリア
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* サイトお知らせ */}
+      {siteAnnouncement && (
+        <div className="bg-blue-50 border-b border-blue-200">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center gap-2 text-blue-800">
+              <CheckCircle className="w-4 h-4" />
+              <span className="text-sm">{siteAnnouncement}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="manuals" className="w-full">
@@ -623,21 +855,6 @@ function App() {
             </TabsContent>
           )}
         </Tabs>
-
-        {/* 管理者用：コミュニティ機能切り替え（開発時のみ表示） */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">管理者設定（開発環境のみ）</h3>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={communityEnabled}
-                onChange={(e) => setCommunityEnabled(e.target.checked)}
-              />
-              <span>コミュニティタブを表示する</span>
-            </label>
-          </div>
-        )}
       </div>
     </div>
   )

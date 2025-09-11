@@ -1,13 +1,650 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DIFY Mastery Portal - 世界最強DIFYマスタリーポータル</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">DIFY Mastery Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color, #667eea) 0%, var(--secondary-color, #764ba2) 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 3rem;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-login {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .btn-register {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-trial {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .btn-purchase {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .pricing {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-description {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-link {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+        
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        
+        .admin-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            color: #333;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .admin-tab {
+            padding: 0.5rem 1rem;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .admin-section {
+            display: none;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .color-input {
+            width: 60px !important;
+            height: 40px;
+            padding: 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+        }
+        
+        .admin-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .admin-btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .admin-btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .admin-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .admin-content {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#" class="admin-link" onclick="toggleAdmin()">🔧 管理画面</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title" id="site-title">DIFY Mastery Portal</h1>
+            <p class="subtitle" id="site-subtitle">世界最強レベルのDIFYマニュアル・コンプリートパッケージ</p>
+            <p class="description" id="site-description">数十万・数百万の売上を目指す完全版コンテンツ</p>
+            
+            <div class="buttons">
+                <button class="btn btn-login" id="login-btn" onclick="showModal('login')">ログイン</button>
+                <button class="btn btn-register" id="register-btn" onclick="showModal('register')">新規会員登録</button>
+                <button class="btn btn-trial" id="trial-btn" onclick="showModal('trial')">⭐ 3日間無料トライアル</button>
+                <button class="btn btn-purchase" id="purchase-btn" onclick="showModal('purchase')">今すぐ購入</button>
+            </div>
+        </div>
+        
+        <div class="features" id="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3 class="feature-title">8冊の完全マニュアル</h3>
+                <p class="feature-description">約200ページの大ボリューム、初心者からプロまで全レベル対応</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⬇️</div>
+                <h3 class="feature-title">実用DSLファイル</h3>
+                <p class="feature-description">すぐに使える3つのDIFYアプリ、実証済みの高品質ワークフロー</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">継続サポート</h3>
+                <p class="feature-description">購入者限定コミュニティと個別コンサルティング</p>
+            </div>
+        </div>
+        
+        <div class="pricing">
+            <div class="price" id="price-display">¥49,800</div>
+            <p class="price-description" id="price-description">一括購入・永久アクセス</p>
+            <button class="btn btn-purchase" onclick="showModal('purchase')" style="width: 100%;">
+                💳 今すぐ購入
+            </button>
+        </div>
+    </div>
+    
+    <!-- 管理画面 -->
+    <div class="admin-panel" id="admin-panel">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>🔧 サイト管理画面</h2>
+                <button class="admin-btn admin-btn-secondary" onclick="closeAdmin()">✕ 閉じる</button>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('content')">コンテンツ</button>
+                <button class="admin-tab" onclick="showAdminTab('pricing')">価格設定</button>
+                <button class="admin-tab" onclick="showAdminTab('design')">デザイン</button>
+                <button class="admin-tab" onclick="showAdminTab('buttons')">ボタン設定</button>
+            </div>
+            
+            <!-- コンテンツタブ -->
+            <div class="admin-section active" id="content-section">
+                <h3>📝 コンテンツ設定</h3>
+                <div class="form-group">
+                    <label for="title-input">サイトタイトル</label>
+                    <input type="text" id="title-input" value="DIFY Mastery Portal">
+                </div>
+                <div class="form-group">
+                    <label for="subtitle-input">サブタイトル</label>
+                    <input type="text" id="subtitle-input" value="世界最強レベルのDIFYマニュアル・コンプリートパッケージ">
+                </div>
+                <div class="form-group">
+                    <label for="description-input">説明文</label>
+                    <textarea id="description-input">数十万・数百万の売上を目指す完全版コンテンツ</textarea>
+                </div>
+            </div>
+            
+            <!-- 価格設定タブ -->
+            <div class="admin-section" id="pricing-section">
+                <h3>💰 価格設定</h3>
+                <div class="form-group">
+                    <label for="price-input">価格（数字のみ）</label>
+                    <input type="number" id="price-input" value="49800">
+                </div>
+                <div class="form-group">
+                    <label for="currency-input">通貨記号</label>
+                    <input type="text" id="currency-input" value="¥">
+                </div>
+                <div class="form-group">
+                    <label for="price-desc-input">価格説明</label>
+                    <input type="text" id="price-desc-input" value="一括購入・永久アクセス">
+                </div>
+            </div>
+            
+            <!-- デザインタブ -->
+            <div class="admin-section" id="design-section">
+                <h3>🎨 デザイン設定</h3>
+                <div class="form-group">
+                    <label for="primary-color">プライマリカラー</label>
+                    <input type="color" id="primary-color" class="color-input" value="#667eea">
+                </div>
+                <div class="form-group">
+                    <label for="secondary-color">セカンダリカラー</label>
+                    <input type="color" id="secondary-color" class="color-input" value="#764ba2">
+                </div>
+            </div>
+            
+            <!-- ボタン設定タブ -->
+            <div class="admin-section" id="buttons-section">
+                <h3>🔘 ボタン設定</h3>
+                <div class="form-group">
+                    <label for="login-text">ログインボタンテキスト</label>
+                    <input type="text" id="login-text" value="ログイン">
+                </div>
+                <div class="form-group">
+                    <label for="register-text">登録ボタンテキスト</label>
+                    <input type="text" id="register-text" value="新規会員登録">
+                </div>
+                <div class="form-group">
+                    <label for="trial-text">トライアルボタンテキスト</label>
+                    <input type="text" id="trial-text" value="3日間無料トライアル">
+                </div>
+                <div class="form-group">
+                    <label for="purchase-text">購入ボタンテキスト</label>
+                    <input type="text" id="purchase-text" value="今すぐ購入">
+                </div>
+            </div>
+            
+            <div class="admin-actions">
+                <button class="admin-btn admin-btn-primary" onclick="previewChanges()">👁️ プレビュー</button>
+                <button class="admin-btn admin-btn-success" onclick="saveChanges()">💾 保存</button>
+                <button class="admin-btn admin-btn-secondary" onclick="resetChanges()">🔄 リセット</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 設定データ
+        let siteConfig = {
+            title: 'DIFY Mastery Portal',
+            subtitle: '世界最強レベルのDIFYマニュアル・コンプリートパッケージ',
+            description: '数十万・数百万の売上を目指す完全版コンテンツ',
+            price: 49800,
+            currency: '¥',
+            priceDescription: '一括購入・永久アクセス',
+            primaryColor: '#667eea',
+            secondaryColor: '#764ba2',
+            buttons: {
+                login: 'ログイン',
+                register: '新規会員登録',
+                trial: '3日間無料トライアル',
+                purchase: '今すぐ購入'
+            }
+        };
+        
+        // ローカルストレージから設定を読み込み
+        function loadConfig() {
+            const saved = localStorage.getItem('dify-portal-config');
+            if (saved) {
+                siteConfig = { ...siteConfig, ...JSON.parse(saved) };
+                applyConfig();
+            }
+        }
+        
+        // 設定を適用
+        function applyConfig() {
+            document.getElementById('page-title').textContent = siteConfig.title;
+            document.getElementById('site-title').textContent = siteConfig.title;
+            document.getElementById('site-subtitle').textContent = siteConfig.subtitle;
+            document.getElementById('site-description').textContent = siteConfig.description;
+            document.getElementById('price-display').textContent = siteConfig.currency + siteConfig.price.toLocaleString();
+            document.getElementById('price-description').textContent = siteConfig.priceDescription;
+            
+            // ボタンテキスト
+            document.getElementById('login-btn').textContent = siteConfig.buttons.login;
+            document.getElementById('register-btn').textContent = siteConfig.buttons.register;
+            document.getElementById('trial-btn').innerHTML = '⭐ ' + siteConfig.buttons.trial;
+            document.getElementById('purchase-btn').textContent = siteConfig.buttons.purchase;
+            
+            // 色設定
+            document.documentElement.style.setProperty('--primary-color', siteConfig.primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', siteConfig.secondaryColor);
+            
+            // 管理画面の入力フィールドも更新
+            updateAdminInputs();
+        }
+        
+        // 管理画面の入力フィールドを更新
+        function updateAdminInputs() {
+            document.getElementById('title-input').value = siteConfig.title;
+            document.getElementById('subtitle-input').value = siteConfig.subtitle;
+            document.getElementById('description-input').value = siteConfig.description;
+            document.getElementById('price-input').value = siteConfig.price;
+            document.getElementById('currency-input').value = siteConfig.currency;
+            document.getElementById('price-desc-input').value = siteConfig.priceDescription;
+            document.getElementById('primary-color').value = siteConfig.primaryColor;
+            document.getElementById('secondary-color').value = siteConfig.secondaryColor;
+            document.getElementById('login-text').value = siteConfig.buttons.login;
+            document.getElementById('register-text').value = siteConfig.buttons.register;
+            document.getElementById('trial-text').value = siteConfig.buttons.trial;
+            document.getElementById('purchase-text').value = siteConfig.buttons.purchase;
+        }
+        
+        // 管理画面の表示/非表示
+        function toggleAdmin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                showAdminPanel();
+            } else {
+                const password = prompt('管理者パスワードを入力してください:');
+                if (password === 'admin123') {
+                    showAdminPanel();
+                } else if (password !== null) {
+                    alert('パスワードが正しくありません。');
+                }
+            }
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('admin-panel').style.display = 'block';
+            updateAdminInputs();
+        }
+        
+        function closeAdmin() {
+            document.getElementById('admin-panel').style.display = 'none';
+        }
+        
+        // 管理画面タブ切り替え
+        function showAdminTab(tabName) {
+            // すべてのタブとセクションを非アクティブに
+            document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.admin-section').forEach(section => section.classList.remove('active'));
+            
+            // 選択されたタブとセクションをアクティブに
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-section').classList.add('active');
+        }
+        
+        // プレビュー
+        function previewChanges() {
+            // 入力値を一時的に適用
+            const tempConfig = {
+                title: document.getElementById('title-input').value,
+                subtitle: document.getElementById('subtitle-input').value,
+                description: document.getElementById('description-input').value,
+                price: parseInt(document.getElementById('price-input').value),
+                currency: document.getElementById('currency-input').value,
+                priceDescription: document.getElementById('price-desc-input').value,
+                primaryColor: document.getElementById('primary-color').value,
+                secondaryColor: document.getElementById('secondary-color').value,
+                buttons: {
+                    login: document.getElementById('login-text').value,
+                    register: document.getElementById('register-text').value,
+                    trial: document.getElementById('trial-text').value,
+                    purchase: document.getElementById('purchase-text').value
+                }
+            };
+            
+            const originalConfig = { ...siteConfig };
+            siteConfig = tempConfig;
+            applyConfig();
+            
+            alert('プレビューを適用しました。保存するか、リセットしてください。');
+        }
+        
+        // 保存
+        function saveChanges() {
+            siteConfig = {
+                title: document.getElementById('title-input').value,
+                subtitle: document.getElementById('subtitle-input').value,
+                description: document.getElementById('description-input').value,
+                price: parseInt(document.getElementById('price-input').value),
+                currency: document.getElementById('currency-input').value,
+                priceDescription: document.getElementById('price-desc-input').value,
+                primaryColor: document.getElementById('primary-color').value,
+                secondaryColor: document.getElementById('secondary-color').value,
+                buttons: {
+                    login: document.getElementById('login-text').value,
+                    register: document.getElementById('register-text').value,
+                    trial: document.getElementById('trial-text').value,
+                    purchase: document.getElementById('purchase-text').value
+                }
+            };
+            
+            localStorage.setItem('dify-portal-config', JSON.stringify(siteConfig));
+            applyConfig();
+            alert('設定を保存しました！');
+        }
+        
+        // リセット
+        function resetChanges() {
+            if (confirm('設定をデフォルトに戻しますか？')) {
+                localStorage.removeItem('dify-portal-config');
+                location.reload();
+            }
+        }
+        
+        // ボタン機能
+        function showModal(type) {
+            const messages = {
+                login: 'ログイン機能（デモ）\n\nメールアドレスとパスワードを入力してログインします。',
+                register: '新規会員登録（デモ）\n\n名前、メールアドレス、パスワードを入力して新規アカウントを作成します。',
+                trial: '3日間無料トライアル（デモ）\n\nメールアドレスを入力して無料トライアルを開始します。\n\n特典：\n• 8冊の完全マニュアル（一部）\n• 実用DSLファイル（サンプル）\n• コミュニティアクセス',
+                purchase: 'コンプリートパッケージ購入（デモ）\n\n' + siteConfig.currency + siteConfig.price.toLocaleString() + 'で全コンテンツへの永久アクセス\n\n含まれる内容：\n• 8冊の完全マニュアル（全200ページ）\n• 実用DSLファイル（3つのアプリ）\n• 継続サポート・コミュニティアクセス\n• 今後追加される新コンテンツ\n• 個別コンサルティング（月1回）'
+            };
+            
+            alert(messages[type] || 'この機能は準備中です。');
+        }
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfig();
+            
+            // URLパラメータをチェック
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                // 自動的に管理画面を表示（パスワード不要）
+                setTimeout(() => {
+                    showAdminPanel();
+                }, 500);
+            }
+        });
+        
+        console.log('DIFY Mastery Portal - 管理機能付きバージョンが正常に読み込まれました');
+    </script>
+</body>
 </html>
+

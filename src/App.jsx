@@ -1,1392 +1,648 @@
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import { BookOpen, Download, Users, Star, Lock, CheckCircle, ArrowRight, Zap, Target, Trophy, Settings, BarChart3, Shield, Database } from 'lucide-react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion.jsx'
+import {
+  Code2,
+  Rocket,
+  GraduationCap,
+  Users,
+  Sparkles,
+  Layers,
+  PenTool,
+  BarChart3,
+  Shield,
+  Lightbulb,
+  Terminal,
+  BookOpen,
+  Cpu,
+  Globe
+} from 'lucide-react'
 import './App.css'
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
-  const [showRegisterForm, setShowRegisterForm] = useState(false)
-  const [showLoginForm, setShowLoginForm] = useState(false)
-  const [showTrialForm, setShowTrialForm] = useState(false)
-  const [registerData, setRegisterData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    purchaseCode: ''
-  })
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  })
-  const [trialData, setTrialData] = useState({
-    name: '',
-    email: '',
-    experience: ''
-  })
-  
-  // 管理者機能の状態管理
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [showAdminPanel, setShowAdminPanel] = useState(false)
-  const [communityEnabled, setCommunityEnabled] = useState(false)
-  const [maintenanceMode, setMaintenanceMode] = useState(false)
-  const [siteAnnouncement, setSiteAnnouncement] = useState('')
-  
-  // 管理者パネルのモーダル状態
-  const [showUserList, setShowUserList] = useState(false)
-  const [showCodeGenerator, setShowCodeGenerator] = useState(false)
-  const [showContentManager, setShowContentManager] = useState(false)
-  const [generatedCode, setGeneratedCode] = useState('')
-
-  // 管理者認証チェック
-  const checkAdminStatus = () => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const adminParam = urlParams.get('admin')
-    const adminStorage = localStorage.getItem('isAdmin')
-    const adminCode = currentUser?.purchaseCode === 'ADMIN2024MASTER'
-    
-    return adminParam === 'true' || adminStorage === 'true' || adminCode
+const featureHighlights = [
+  {
+    title: '構造化されたロードマップ',
+    description: '基礎文法から実務レベルのプロジェクトまで、12週間で段階的に実力を引き上げるロードマップを用意。',
+    icon: Code2
+  },
+  {
+    title: '現場で通用する課題',
+    description: 'AIアシスタントと組み合わせたコードレビューやリファクタリングなど、実際の現場と同じ流れで学習。',
+    icon: Rocket
+  },
+  {
+    title: '学習サポート体制',
+    description: 'ライブ講義・録画・質問フォーラムを組み合わせ、挫折させないサポート体制を構築しています。',
+    icon: Users
   }
+]
 
-  // 初期化時に管理者状態をチェック
-  useEffect(() => {
-    const adminStatus = checkAdminStatus()
-    setIsAdmin(adminStatus)
-    if (adminStatus) {
-      localStorage.setItem('isAdmin', 'true')
-    }
-    
-    // 設定の読み込み
-    const savedCommunityEnabled = localStorage.getItem('communityEnabled')
-    const savedMaintenanceMode = localStorage.getItem('maintenanceMode')
-    const savedAnnouncement = localStorage.getItem('siteAnnouncement')
-    
-    if (savedCommunityEnabled) setCommunityEnabled(JSON.parse(savedCommunityEnabled))
-    if (savedMaintenanceMode) setMaintenanceMode(JSON.parse(savedMaintenanceMode))
-    if (savedAnnouncement) setSiteAnnouncement(savedAnnouncement)
-  }, [currentUser])
-
-  // 設定の保存
-  const saveAdminSettings = () => {
-    localStorage.setItem('communityEnabled', JSON.stringify(communityEnabled))
-    localStorage.setItem('maintenanceMode', JSON.stringify(maintenanceMode))
-    localStorage.setItem('siteAnnouncement', siteAnnouncement)
+const learningTracks = [
+  {
+    title: 'Beginner Launchpad',
+    subtitle: '未経験からPythonの基礎を確実に習得',
+    icon: GraduationCap,
+    duration: '4週間',
+    focus: ['文法・データ型', '制御構文', '標準ライブラリ', 'Gitの基本'],
+    outcome: '日常業務を自動化するスクリプトが自力で作れる'
+  },
+  {
+    title: 'Career Accelerator',
+    subtitle: 'チーム開発で通用する実務力を獲得',
+    icon: Layers,
+    duration: '5週間',
+    focus: ['テスト駆動開発', 'API / Webアプリ', 'Docker基礎', 'CI/CD入門'],
+    outcome: 'チーム開発で品質とスピードを両立できるエンジニアへ'
+  },
+  {
+    title: 'Data Science Focus',
+    subtitle: 'データ分析・機械学習の第一歩を踏み出す',
+    icon: BarChart3,
+    duration: '3週間',
+    focus: ['Pandas & NumPy', '可視化', '機械学習基礎', 'モデル評価'],
+    outcome: 'データに基づく意思決定ができるスキルセットを獲得'
   }
+]
 
-  // 設定変更時に自動保存
-  useEffect(() => {
-    saveAdminSettings()
-  }, [communityEnabled, maintenanceMode, siteAnnouncement])
-
-  // ローカルストレージから会員データを取得
-  const getUsers = () => {
-    const users = localStorage.getItem('dify_members')
-    return users ? JSON.parse(users) : []
+const curriculumModules = [
+  {
+    name: 'Python Foundations',
+    focus: 'コンピュータサイエンスの基礎思考を身につける',
+    topics: ['データ型とコレクション', '関数設計とドキュメント', '例外処理とデバッグ', 'テスト自動化の基礎'],
+    outcomes: ['PEP8準拠のコード記述', 'pytestによる自動テスト', '堅牢なエラーハンドリング'],
+    icon: BookOpen
+  },
+  {
+    name: 'Applied Automation',
+    focus: '業務効率化を支える自動化スクリプトを構築',
+    topics: ['ファイル操作と自動レポート', 'Webスクレイピング', 'API連携', 'スケジューリング'],
+    outcomes: ['日次レポートの自動生成', '外部API連携の設計', '再利用可能なモジュール化'],
+    icon: Terminal
+  },
+  {
+    name: 'Web & API Development',
+    focus: 'ユーザーに価値を届けるアプリケーション開発',
+    topics: ['FastAPIによるAPI設計', 'テンプレートと認証', 'データベースモデリング', 'クラウドデプロイ'],
+    outcomes: ['スケーラブルなAPI開発', 'Dockerでの本番運用', '自動デプロイの仕組み構築'],
+    icon: Globe
+  },
+  {
+    name: 'Data & Machine Learning',
+    focus: 'ビジネス価値を生むデータ活用を実践',
+    topics: ['データクレンジング', 'EDAと可視化', 'モデル構築', '成果プレゼンテーション'],
+    outcomes: ['Jupyterによる分析レポート', 'scikit-learnでの予測モデル', '意思決定に繋がる提案資料'],
+    icon: Cpu
   }
+]
 
-  // トライアルユーザーデータを取得
-  const getTrialUsers = () => {
-    const trialUsers = localStorage.getItem('dify_trial_users')
-    return trialUsers ? JSON.parse(trialUsers) : []
+const projectShowcase = [
+  {
+    title: '自動レポート生成システム',
+    level: 'Week 3',
+    description: '社内のExcelレポート作成を完全自動化。テンプレート管理と通知まで一括で処理。',
+    stack: ['Pandas', 'OpenPyXL', 'APScheduler']
+  },
+  {
+    title: 'FastAPIベースの顧客管理API',
+    level: 'Week 6',
+    description: 'JWT認証とロール管理を備えたスケーラブルなAPIをチーム開発形式で構築。',
+    stack: ['FastAPI', 'PostgreSQL', 'Docker']
+  },
+  {
+    title: '需要予測ダッシュボード',
+    level: 'Week 10',
+    description: '機械学習モデルで需要予測を行い、意思決定者向けのダッシュボードを提案。',
+    stack: ['scikit-learn', 'Plotly', 'Streamlit']
   }
+]
 
-  // 会員データを保存
-  const saveUser = (userData) => {
-    const users = getUsers()
-    users.push(userData)
-    localStorage.setItem('dify_members', JSON.stringify(users))
+const testimonials = [
+  {
+    name: 'Ayaka Sato',
+    role: 'データアナリスト / IT企業',
+    result: '1.5倍の分析スピードを実現',
+    quote:
+      '学習ロードマップが明確で、手を動かしながら理解が深まりました。現場のレビューに近いフィードバックで着実に力がつきました。'
+  },
+  {
+    name: 'Kohei Tanaka',
+    role: 'バックエンドエンジニア / フリーランス',
+    result: 'FastAPI案件を継続受注',
+    quote:
+      '開発プロセスが体系的に学べたことで、提案からデリバリーまで自信を持って進められるようになりました。コミュニティでの情報交換も大きな財産です。'
+  },
+  {
+    name: 'Mika Suzuki',
+    role: '企画職からキャリアチェンジ',
+    result: '未経験から内定獲得',
+    quote:
+      'アウトプット主体のカリキュラムで思考法が身につきました。メンターの伴走で面接対策も安心して進められました。'
   }
+]
 
-  // トライアルユーザーを保存
-  const saveTrialUser = (trialUserData) => {
-    const trialUsers = getTrialUsers()
-    trialUsers.push(trialUserData)
-    localStorage.setItem('dify_trial_users', JSON.stringify(trialUsers))
+const pricingPlans = [
+  {
+    title: 'Essential',
+    price: '¥69,800',
+    period: '一括 / 12週間アクセス',
+    description: 'まずは自分のペースでスキルを固めたい方向け。',
+    features: ['ライブ講義アーカイブ', '週次課題レビュー', '学習ダッシュボード', 'オンラインコミュニティ']
+  },
+  {
+    title: 'Professional',
+    price: '¥98,800',
+    period: '一括 / 12週間アクセス',
+    description: '実務案件を想定した演習とメンタリングを重視。',
+    features: ['Essentialの全て', '個別コードレビュー', 'キャリア相談（月2回）', 'モック面接＆履歴書レビュー'],
+    highlighted: true
+  },
+  {
+    title: 'Team Plan',
+    price: '¥248,000〜',
+    period: '最大5名 / 12週間',
+    description: '社内チームのPython導入を推進する企業様向け。',
+    features: ['キックオフワークショップ', 'チーム専用ダッシュボード', '社内課題に合わせた教材カスタマイズ', '成果発表会の運営サポート']
   }
+]
 
-  // トライアル期間チェック
-  const checkTrialAccess = (user) => {
-    if (!user || user.type !== 'trial') return { allowed: false, reason: 'not_trial' }
-    
-    const now = new Date()
-    const endDate = new Date(user.endDate)
-    
-    if (now > endDate) {
-      return { allowed: false, reason: 'trial_expired' }
-    }
-    
-    return { allowed: true, remainingDays: Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)) }
+const faqs = [
+  {
+    question: 'プログラミング未経験でも参加できますか？',
+    answer:
+      'はい。初週で開発環境構築からプログラミングの基本思考を丁寧に解説します。キーボード操作やエディタの使い方までカバーするスターターガイドも用意しています。'
+  },
+  {
+    question: '働きながらでも完走できるペースですか？',
+    answer:
+      '週6〜8時間の学習時間を想定したカリキュラムです。毎週の必須課題とオプション課題を分けているため、繁忙期でも調整しやすい構成になっています。'
+  },
+  {
+    question: '講義はライブ配信ですか？',
+    answer:
+      '主要テーマはライブ配信を行い、録画と資料を即日公開します。ライブ参加が難しい場合でも、質問フォーラムでメンターに24時間以内に回答をもらえます。'
+  },
+  {
+    question: '受講後のサポートはありますか？',
+    answer:
+      '卒業生コミュニティに無期限で参加可能です。キャリア相談や技術レビューのイベントを継続開催しており、最新トレンドのキャッチアップも可能です。'
   }
+]
 
-  // トライアルコンテンツアクセス制御
-  const canAccessTrialContent = (contentId) => {
-    if (!currentUser || currentUser.type !== 'trial') return false
-    
-    const trialContent = ['dify_intro_guide', 'sample_chatbot_dsl']
-    return trialContent.includes(contentId)
-  }
+const toolchain = [
+  { label: 'GitHub', description: 'チーム開発とコードレビューの基礎運用' },
+  { label: 'VS Code', description: '開発効率を高める拡張機能と設定' },
+  { label: 'Notion', description: '学習ログと知識ベースの管理' },
+  { label: 'Dify & GPT', description: 'AIアシスタントを活用した学習・開発支援' }
+]
 
-  // ログイン処理
-  const handleLogin = (e) => {
-    e.preventDefault()
-    const users = getUsers()
-    const trialUsers = getTrialUsers()
-    
-    // 正規ユーザーをチェック
-    let user = users.find(u => u.email === loginData.email && u.password === loginData.password)
-    
-    // トライアルユーザーをチェック
-    if (!user) {
-      user = trialUsers.find(u => u.email === loginData.email && u.password === loginData.password)
-    }
-    
-    if (user) {
-      // トライアルユーザーの場合、期限チェック
-      if (user.type === 'trial') {
-        const accessCheck = checkTrialAccess(user)
-        if (!accessCheck.allowed) {
-          if (accessCheck.reason === 'trial_expired') {
-            alert('トライアル期間が終了しました。正規版をご購入ください。')
-            return
-          }
-        }
-      }
-      
-      setIsLoggedIn(true)
-      setCurrentUser(user)
-      setShowLoginForm(false)
-      setLoginData({ email: '', password: '' })
-      
-      // 管理者チェック
-      setTimeout(() => {
-        const adminStatus = checkAdminStatus()
-        setIsAdmin(adminStatus)
-        if (adminStatus) {
-          localStorage.setItem('isAdmin', 'true')
-        }
-      }, 100)
-    } else {
-      alert('メールアドレスまたはパスワードが正しくありません。')
-    }
-  }
-
-  // 会員登録処理
-  const handleRegister = (e) => {
-    e.preventDefault()
-    
-    // バリデーション
-    if (registerData.password !== registerData.confirmPassword) {
-      alert('パスワードが一致しません。')
-      return
-    }
-    
-    if (registerData.purchaseCode !== 'DIFY2024MASTER' && registerData.purchaseCode !== 'ADMIN2024MASTER') {
-      alert('購入者コードが正しくありません。')
-      return
-    }
-
-    const users = getUsers()
-    if (users.find(u => u.email === registerData.email)) {
-      alert('このメールアドレスは既に登録されています。')
-      return
-    }
-
-    // 新規ユーザー登録
-    const newUser = {
-      id: Date.now(),
-      name: registerData.name,
-      email: registerData.email,
-      password: registerData.password,
-      purchaseCode: registerData.purchaseCode,
-      registeredAt: new Date().toISOString()
-    }
-
-    saveUser(newUser)
-    setIsLoggedIn(true)
-    setCurrentUser(newUser)
-    setShowRegisterForm(false)
-    setRegisterData({ name: '', email: '', password: '', confirmPassword: '', purchaseCode: '' })
-    
-    // 管理者チェック
-    setTimeout(() => {
-      const adminStatus = checkAdminStatus()
-      setIsAdmin(adminStatus)
-      if (adminStatus) {
-        localStorage.setItem('isAdmin', 'true')
-      }
-    }, 100)
-  }
-
-  // トライアル登録処理
-  const handleTrialRegister = (e) => {
-    e.preventDefault()
-    
-    // バリデーション
-    if (!trialData.name || !trialData.email || !trialData.experience) {
-      alert('すべての項目を入力してください。')
-      return
-    }
-
-    const users = getUsers()
-    const trialUsers = getTrialUsers()
-    
-    // 既存ユーザーチェック
-    if (users.find(u => u.email === trialData.email) || trialUsers.find(u => u.email === trialData.email)) {
-      alert('このメールアドレスは既に登録されています。')
-      return
-    }
-
-    // トライアルユーザー作成
-    const trialUser = {
-      id: 'trial_' + Date.now(),
-      type: 'trial',
-      name: trialData.name,
-      email: trialData.email,
-      password: 'trial_' + Math.random().toString(36).substring(2, 8), // 自動生成パスワード
-      experience: trialData.experience,
-      startDate: new Date().toISOString(),
-      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日後
-      registeredAt: new Date().toISOString(),
-      downloadCount: 0,
-      maxDownloads: 1
-    }
-
-    saveTrialUser(trialUser)
-    setIsLoggedIn(true)
-    setCurrentUser(trialUser)
-    setShowTrialForm(false)
-    setTrialData({ name: '', email: '', experience: '' })
-    
-    alert(`トライアル登録が完了しました！\n自動生成パスワード: ${trialUser.password}\n\n3日間、限定コンテンツをお楽しみください。`)
-  }
-
-  // ログアウト処理
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setCurrentUser(null)
-  }
-
-  // ダウンロード機能
-  const downloadFile = (filename, folder) => {
-    const link = document.createElement('a')
-    link.href = `/downloads/${folder}/${filename}`
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  // マニュアル表示機能
-  const viewManual = (filename) => {
-    const url = `/downloads/manuals/${filename}`
-    window.open(url, '_blank')
-  }
-
-  // 管理者機能
-  const generatePurchaseCode = () => {
-    const timestamp = Date.now().toString(36).toUpperCase()
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const newCode = `DIFY${timestamp}${random}`
-    setGeneratedCode(newCode)
-  }
-
-  const exportUserData = () => {
-    const users = getUsers()
-    const dataStr = JSON.stringify(users, null, 2)
-    const dataBlob = new Blob([dataStr], {type: 'application/json'})
-    const url = URL.createObjectURL(dataBlob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `user_data_${new Date().toISOString().split('T')[0]}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
-  const deleteUser = (userId) => {
-    if (confirm('このユーザーを削除してもよろしいですか？')) {
-      const users = getUsers()
-      const filteredUsers = users.filter(user => user.id !== userId)
-      localStorage.setItem('dify_members', JSON.stringify(filteredUsers))
-      alert('ユーザーを削除しました。')
-    }
-  }
-
-  // トライアル専用コンテンツ
-  const trialContent = {
-    manuals: [
-      {
-        id: 'dify_intro_guide',
-        title: "DIFY入門ガイド（体験版）",
-        description: "DIFYの基本概念と簡単な使い方",
-        category: "入門",
-        pages: "約10ページ",
-        level: "初心者",
-        icon: <BookOpen className="w-6 h-6" />,
-        color: "bg-green-500",
-        filename: "dify_trial_guide.pdf",
-        isTrial: true
-      }
-    ],
-    dslFiles: [
-      {
-        id: 'sample_chatbot_dsl',
-        title: "サンプルチャットボット",
-        description: "基本的なチャットボットのDSLファイル",
-        category: "サンプル",
-        difficulty: "初級",
-        icon: <Zap className="w-6 h-6" />,
-        color: "bg-green-500",
-        filename: "sample_chatbot.yml",
-        isTrial: true
-      }
-    ]
-  }
-
-  const manuals = [
-    {
-      id: 1,
-      title: "世界最強DIFY完全構築ガイド",
-      description: "DIFYの基礎から応用まで完全網羅",
-      category: "基礎",
-      pages: "約25ページ",
-      level: "初心者〜中級者",
-      icon: <BookOpen className="w-6 h-6" />,
-      color: "bg-blue-500",
-      filename: "dify_ultimate_guide.pdf"
-    },
-    {
-      id: 2,
-      title: "プロ級アプリ構築マスターマニュアル",
-      description: "ワークフロー設計から実践的アプリ構築まで",
-      category: "応用",
-      pages: "約30ページ",
-      level: "中級者〜上級者",
-      icon: <Zap className="w-6 h-6" />,
-      color: "bg-purple-500",
-      filename: "dify_app_build_master_manual.pdf"
-    },
-    {
-      id: 3,
-      title: "WriteGenius Pro 完全マスターガイド",
-      description: "ブログ記事自動執筆アプリの完全攻略",
-      category: "アプリ専用",
-      pages: "約20ページ",
-      level: "全レベル",
-      icon: <Target className="w-6 h-6" />,
-      color: "bg-green-500",
-      filename: "writegenius_pro_master_guide.pdf"
-    },
-    {
-      id: 4,
-      title: "YouTube Script Pro 完全マスターガイド",
-      description: "バズる動画台本作成の秘訣",
-      category: "アプリ専用",
-      pages: "約18ページ",
-      level: "全レベル",
-      icon: <Trophy className="w-6 h-6" />,
-      color: "bg-red-500",
-      filename: "youtube_script_pro_master_guide.pdf"
-    },
-    {
-      id: 5,
-      title: "Image Master AI 完全マスターガイド",
-      description: "神絵師になるための対話術",
-      category: "アプリ専用",
-      pages: "約16ページ",
-      level: "全レベル",
-      icon: <Star className="w-6 h-6" />,
-      color: "bg-yellow-500",
-      filename: "image_master_ai_master_guide.pdf"
-    }
-  ]
-
-  const dslApps = [
-    {
-      name: "WriteGenius Pro",
-      description: "SEO最適化されたブログ記事を自動生成",
-      features: ["Google検索連携", "SEO分析", "複数AI統合", "参考URL自動追記"],
-      filename: "WriteGeniusPro.yml",
-      manualFilename: "writegenius_pro_master_guide.pdf"
-    },
-    {
-      name: "YouTube Script Pro", 
-      description: "バズる動画台本とサムネイルを自動生成",
-      features: ["企画立案", "構成作成", "台本執筆", "サムネイル生成"],
-      filename: "Youtubemaker.yml",
-      manualFilename: "youtube_script_pro_master_guide.pdf"
-    },
-    {
-      name: "Image Master AI",
-      description: "対話型で理想の画像を生成",
-      features: ["対話型インターフェース", "複数AI対応", "プロンプト最適化", "修正機能"],
-      filename: "imageGenerator.yml",
-      manualFilename: "image_master_ai_master_guide.pdf"
-    }
-  ]
-
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <div className="container mx-auto px-4 py-16">
-          {/* ヘッダー */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-2 rounded-full mb-6">
-              <Lock className="w-4 h-4" />
-              会員限定ポータル
-            </div>
-            <h1 className="text-5xl font-bold text-white mb-6">
-              DIFY Mastery Portal
-            </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              世界最強レベルのDIFYマニュアル・コンプリートパッケージ
-              <br />
-              数十万・数百万の売上を目指せる完全版コンテンツ
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button 
-                onClick={() => {
-                  console.log('Login button clicked');
-                  setShowLoginForm(true);
-                }}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg"
-              >
-                ログイン
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button 
-                onClick={() => {
-                  console.log('Register button clicked');
-                  console.log('Current showRegisterForm state:', showRegisterForm);
-                  setShowRegisterForm(true);
-                  console.log('Setting showRegisterForm to true');
-                }}
-                variant="outline"
-                className="border-purple-400 text-purple-300 hover:bg-purple-600 hover:text-white px-8 py-3 text-lg"
-              >
-                新規会員登録
-              </Button>
-              <Button 
-                onClick={() => setShowTrialForm(true)}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
-              >
-                <Star className="w-5 h-5 mr-2" />
-                3日間無料トライアル
-              </Button>
-            </div>
-          </div>
-
-          {/* 特徴 */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <BookOpen className="w-12 h-12 text-blue-400 mb-4" />
-                <CardTitle className="text-white">8冊の完全マニュアル</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300">約200ページの大ボリューム。初心者からプロまで全レベル対応。</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <Download className="w-12 h-12 text-green-400 mb-4" />
-                <CardTitle className="text-white">実用DSLファイル</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300">すぐに使える3つのDIFYアプリ。実証済みの高品質ワークフロー。</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <Users className="w-12 h-12 text-purple-400 mb-4" />
-                <CardTitle className="text-white">継続サポート</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300">購入者限定コミュニティと個別コンサルティング。</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* 価格 */}
-          <div className="text-center">
-            <Card className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 border-purple-500/50 max-w-md mx-auto">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white">コンプリートパッケージ</CardTitle>
-                <CardDescription className="text-gray-300">
-                  全マニュアル + DSLファイル + 特典
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-bold text-white mb-4">¥49,800</div>
-                <p className="text-gray-300 mb-6">一括購入・永久アクセス</p>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                  今すぐ購入
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* ログインモーダル */}
-        {showLoginForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <Card className="w-full max-w-md mx-4">
-              <CardHeader>
-                <CardTitle>ログイン</CardTitle>
-                <CardDescription>会員専用エリアにアクセス</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">メールアドレス</label>
-                    <input
-                      type="email"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">パスワード</label>
-                    <input
-                      type="password"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={loginData.password}
-                      onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="submit" className="flex-1">ログイン</Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => setShowLoginForm(false)}
-                    >
-                      キャンセル
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* 会員登録モーダル */}
-        {console.log('Rendering register form check:', showRegisterForm)}
-        {showRegisterForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            {console.log('Register form is being rendered')}
-            <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
-              <h2 className="text-2xl font-bold mb-4">新規会員登録</h2>
-              <p className="mb-4">購入者コードが必要です</p>
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">お名前</label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={registerData.name}
-                    onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">メールアドレス</label>
-                  <input
-                    type="email"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={registerData.email}
-                    onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">パスワード</label>
-                  <input
-                    type="password"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={registerData.password}
-                    onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">パスワード確認</label>
-                  <input
-                    type="password"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData({...registerData, confirmPassword: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">購入者コード</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="商品購入時に提供されたコード"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={registerData.purchaseCode}
-                    onChange={(e) => setRegisterData({...registerData, purchaseCode: e.target.value})}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <button type="submit" className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">登録</button>
-                  <button 
-                    type="button" 
-                    className="border border-gray-300 py-2 px-4 rounded-md hover:bg-gray-50"
-                    onClick={() => setShowRegisterForm(false)}
-                  >
-                    キャンセル
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* トライアル登録フォーム */}
-        {showTrialForm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <Card className="w-full max-w-md mx-4">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-green-600" />
-                  3日間無料トライアル
-                </CardTitle>
-                <CardDescription>
-                  限定コンテンツを3日間無料でお試しいただけます
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleTrialRegister} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">お名前</label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      value={trialData.name}
-                      onChange={(e) => setTrialData({...trialData, name: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">メールアドレス</label>
-                    <input
-                      type="email"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      value={trialData.email}
-                      onChange={(e) => setTrialData({...trialData, email: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">DIFYの経験レベル</label>
-                    <select
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      value={trialData.experience}
-                      onChange={(e) => setTrialData({...trialData, experience: e.target.value})}
-                    >
-                      <option value="">選択してください</option>
-                      <option value="beginner">初心者（DIFYを触ったことがない）</option>
-                      <option value="basic">基本レベル（少し触ったことがある）</option>
-                      <option value="intermediate">中級レベル（ある程度使える）</option>
-                      <option value="advanced">上級レベル（かなり詳しい）</option>
-                    </select>
-                  </div>
-                  <div className="bg-green-50 p-3 rounded-md">
-                    <h4 className="font-semibold text-green-800 mb-2">トライアル内容</h4>
-                    <ul className="text-sm text-green-700 space-y-1">
-                      <li>• DIFY入門ガイド（10ページ）</li>
-                      <li>• サンプルチャットボットDSL</li>
-                      <li>• 3日間の限定アクセス</li>
-                    </ul>
-                  </div>
-                  <div className="flex gap-2">
-                    <button type="submit" className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
-                      無料トライアル開始
-                    </button>
-                    <button 
-                      type="button" 
-                      className="border border-gray-300 py-2 px-4 rounded-md hover:bg-gray-50"
-                      onClick={() => setShowTrialForm(false)}
-                    >
-                      キャンセル
-                    </button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
-    )
-  }
-
+function SectionHeader({ eyebrow, title, description }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* ヘッダー */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">DIFY Mastery Portal</h1>
-                <p className="text-sm text-gray-600">会員限定ポータル</p>
-              </div>
+    <div className="max-w-3xl space-y-4">
+      {eyebrow && (
+        <Badge variant="secondary" className="bg-sky-400/10 text-sky-300 border-sky-400/40">
+          {eyebrow}
+        </Badge>
+      )}
+      <h2 className="text-3xl font-semibold text-white md:text-4xl">{title}</h2>
+      {description && (
+        <p className="text-slate-300 leading-relaxed">{description}</p>
+      )}
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div
+        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.25),_transparent_60%)]"
+        aria-hidden
+      />
+
+      <header className="border-b border-white/5 bg-slate-950/70 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-sky-500/10 text-sky-300">
+              <Code2 className="size-5" />
             </div>
-            <div className="flex items-center gap-4">
-              {currentUser?.type === 'trial' && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                    <Star className="w-3 h-3 mr-1" />
-                    トライアル
-                  </Badge>
-                  <span className="text-sm text-gray-600">
-                    残り{checkTrialAccess(currentUser).remainingDays}日
-                  </span>
-                </div>
-              )}
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                認証済み
-              </Badge>
-              {currentUser?.purchaseCode === 'ADMIN2024MASTER' && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowAdminPanel(!showAdminPanel)}
-                  className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
-                >
-                  <Settings className="w-4 h-4 mr-1" />
-                  管理者
-                </Button>
-              )}
-              <Button 
-                variant="outline" 
-                onClick={handleLogout}
-              >
-                ログアウト
-              </Button>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">Python Mastery</p>
+              <p className="text-lg font-semibold text-white">Dify Mastery Portal</p>
             </div>
+          </div>
+          <div className="hidden items-center gap-4 md:flex">
+            <Button variant="ghost" className="text-slate-300 hover:text-white">
+              カリキュラム
+            </Button>
+            <Button variant="ghost" className="text-slate-300 hover:text-white">
+              サービス
+            </Button>
+            <Button className="bg-sky-500 text-slate-950 hover:bg-sky-400">
+              無料相談を予約
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* 管理者パネル */}
-      {currentUser?.purchaseCode === 'ADMIN2024MASTER' && showAdminPanel && (
-        <div className="bg-red-50 border-b border-red-200">
-          <div className="container mx-auto px-4 py-6">
-            <div className="bg-white rounded-lg shadow-sm border border-red-200 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-red-800 flex items-center gap-2">
-                  <Shield className="w-6 h-6" />
-                  管理者ダッシュボード
-                </h2>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowAdminPanel(false)}
-                >
-                  閉じる
+      <main className="mx-auto max-w-6xl px-6 py-16 space-y-24 md:space-y-32">
+        <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-10 md:p-16">
+          <div className="absolute inset-y-0 right-0 w-full max-w-xl translate-x-1/4 rounded-full bg-sky-500/10 blur-3xl" />
+          <div className="relative flex flex-col gap-12 md:flex-row md:items-center">
+            <div className="space-y-6 md:w-3/5">
+              <Badge className="bg-sky-500 text-slate-950 hover:bg-sky-400">AI時代に最短で活躍するPythonエンジニアへ</Badge>
+              <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
+                実務さながらのアウトプットで学ぶ<br />Python学習プラットフォーム
+              </h1>
+              <p className="text-lg leading-relaxed text-slate-300">
+                Dify Mastery Portalは、AIアシスタントと連動した12週間の集中プログラム。コードを書くことはもちろん、
+                課題定義・実装・レビュー・改善までを通しで学び、チームで価値を届けるエンジニアを育成します。
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button size="lg" className="bg-sky-500 text-slate-950 hover:bg-sky-400">
+                  無料オリエンテーションに参加
+                </Button>
+                <Button size="lg" variant="outline" className="border-slate-700 bg-slate-900/60 text-white hover:bg-slate-800">
+                  カリキュラムを見る
                 </Button>
               </div>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {/* システム統計 */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <BarChart3 className="w-4 h-4" />
-                      システム統計
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>登録ユーザー:</span>
-                        <span className="font-semibold">{getUsers().length}名</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>コミュニティ:</span>
-                        <span className={`font-semibold ${communityEnabled ? 'text-green-600' : 'text-red-600'}`}>
-                          {communityEnabled ? 'ON' : 'OFF'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>メンテナンス:</span>
-                        <span className={`font-semibold ${maintenanceMode ? 'text-red-600' : 'text-green-600'}`}>
-                          {maintenanceMode ? 'ON' : 'OFF'}
-                        </span>
-                      </div>
+              <div className="grid gap-6 pt-4 sm:grid-cols-3">
+                {featureHighlights.map(feature => (
+                  <div key={feature.title} className="flex gap-3 text-sm text-slate-300">
+                    <div className="flex size-9 items-center justify-center rounded-lg border border-sky-400/40 bg-sky-500/10 text-sky-300">
+                      <feature.icon className="size-4" />
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* コンテンツ管理 */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <BookOpen className="w-4 h-4" />
-                      コンテンツ管理
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={communityEnabled}
-                          onChange={(e) => setCommunityEnabled(e.target.checked)}
-                          className="rounded"
-                        />
-                        <span>コミュニティタブ表示</span>
-                      </label>
-                      <Button size="sm" className="w-full text-xs" onClick={() => setShowContentManager(true)}>
-                        コンテンツ追加
-                      </Button>
+                    <div>
+                      <p className="font-medium text-white">{feature.title}</p>
+                      <p className="leading-relaxed text-slate-400">{feature.description}</p>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* ユーザー管理 */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      ユーザー管理
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="text-xs text-gray-600">
-                        最新登録: {getUsers().length > 0 ? getUsers()[getUsers().length - 1]?.name || '未登録' : '未登録'}
-                      </div>
-                      <Button size="sm" className="w-full text-xs" onClick={() => setShowUserList(true)}>
-                        ユーザー一覧
-                      </Button>
-                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => setShowCodeGenerator(true)}>
-                        コード生成
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* システム設定 */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Database className="w-4 h-4" />
-                      システム設定
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={maintenanceMode}
-                          onChange={(e) => setMaintenanceMode(e.target.checked)}
-                          className="rounded"
-                        />
-                        <span>メンテナンスモード</span>
-                      </label>
-                      <Button size="sm" variant="outline" className="w-full text-xs" onClick={exportUserData}>
-                        データバックアップ
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                ))}
               </div>
+            </div>
+            <Card className="relative flex-1 border-slate-800/80 bg-slate-950/70">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-white">
+                  <Sparkles className="size-5 text-sky-300" />
+                  今週のライブセッション
+                </CardTitle>
+                <CardDescription className="text-slate-300">
+                  実務直結のテーマでハンズオン。録画と資料はすべてアーカイブされます。
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6 text-sm">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-white">非同期処理で高速化するWeb API</p>
+                    <Badge className="bg-emerald-500/20 text-emerald-300">Hands-on</Badge>
+                  </div>
+                  <p className="text-slate-400">FastAPIのバックグラウンドタスクとRedisを活用したスケール戦略を学びます。</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-white">データ分析から意思決定への落とし込み</p>
+                    <Badge variant="secondary" className="bg-purple-500/20 text-purple-200 border-purple-400/30">
+                      Strategy
+                    </Badge>
+                  </div>
+                  <p className="text-slate-400">定量分析の結果を経営層に伝えるストーリーづくりと可視化のベストプラクティス。</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-white">AIアシスタントと進めるコードレビュー</p>
+                    <Badge variant="secondary" className="bg-sky-500/20 text-sky-200 border-sky-400/30">
+                      Workshop
+                    </Badge>
+                  </div>
+                  <p className="text-slate-400">生成AIを活用してレビュー品質を高めるプロンプト設計とチーム運用を体験。</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-              {/* お知らせ設定 */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">サイトお知らせ設定</CardTitle>
+        <section id="tracks" className="space-y-12">
+          <SectionHeader
+            eyebrow="Learning Tracks"
+            title="目的に合わせて選べる3つの学習トラック"
+            description="習熟度とキャリアゴールに応じてカリキュラムを最適化。いずれのトラックでもAIアシスタントとの協働方法を徹底的に学びます。"
+          />
+          <div className="grid gap-8 md:grid-cols-3">
+            {learningTracks.map(track => (
+              <Card key={track.title} className="flex flex-col border-slate-800/80 bg-slate-950/60">
+                <CardHeader className="space-y-3">
+                  <div className="flex size-12 items-center justify-center rounded-xl border border-sky-400/40 bg-sky-500/10 text-sky-300">
+                    <track.icon className="size-6" />
+                  </div>
+                  <CardTitle className="text-white">{track.title}</CardTitle>
+                  <CardDescription className="text-slate-300">{track.subtitle}</CardDescription>
+                  <Badge variant="secondary" className="w-fit bg-slate-800 text-slate-200">
+                    {track.duration}
+                  </Badge>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <textarea
-                      placeholder="サイト上部に表示するお知らせを入力してください..."
-                      value={siteAnnouncement}
-                      onChange={(e) => setSiteAnnouncement(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                      rows="2"
-                    />
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={saveAdminSettings}>
-                        設定保存
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => setSiteAnnouncement('')}>
-                        クリア
-                      </Button>
+                <CardContent className="mt-auto space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">学習テーマ</p>
+                    <div className="flex flex-wrap gap-2">
+                      {track.focus.map(item => (
+                        <Badge key={item} variant="outline" className="border-slate-700 bg-slate-900/60 text-slate-200">
+                          {item}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">到達目標</p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">{track.outcome}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section id="curriculum" className="space-y-12">
+          <SectionHeader
+            eyebrow="Curriculum"
+            title="12週間で実務スキルを定着させるカリキュラム"
+            description="各モジュールは1週間単位で構成。理解度チェックとコードレビューを繰り返し、インプットとアウトプットのバランスを最適化します。"
+          />
+          <div className="grid gap-8 md:grid-cols-2">
+            {curriculumModules.map(module => (
+              <Card key={module.name} className="border-slate-800/80 bg-slate-950/60">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-12 items-center justify-center rounded-xl border border-sky-400/40 bg-sky-500/10 text-sky-300">
+                      <module.icon className="size-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-white">{module.name}</CardTitle>
+                      <CardDescription className="text-slate-300">{module.focus}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6 text-sm">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">主なトピック</p>
+                    <ul className="mt-3 space-y-2 text-slate-300">
+                      {module.topics.map(topic => (
+                        <li key={topic} className="flex items-start gap-2">
+                          <div className="mt-1 size-1.5 rounded-full bg-sky-400" />
+                          <span>{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">得られるスキル</p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {module.outcomes.map(outcome => (
+                        <div key={outcome} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-slate-200">
+                          {outcome}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            ))}
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* ユーザー一覧モーダル */}
-      {showUserList && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold">ユーザー一覧</h3>
-              <Button variant="outline" onClick={() => setShowUserList(false)}>閉じる</Button>
-            </div>
-            <div className="space-y-4">
-              {getUsers().map((user, index) => (
-                <div key={user.id} className="border rounded-lg p-4">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <span className="text-sm text-gray-600">名前:</span>
-                      <div className="font-semibold">{user.name}</div>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-600">メール:</span>
-                      <div className="font-semibold">{user.email}</div>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-600">登録日:</span>
-                      <div className="font-semibold">{new Date(user.registeredAt).toLocaleDateString()}</div>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-600">購入者コード:</span>
-                      <div className="font-semibold">{user.purchaseCode || 'DIFY2024MASTER'}</div>
-                    </div>
+        <section id="projects" className="space-y-12">
+          <SectionHeader
+            eyebrow="Projects"
+            title="段階ごとに挑戦するアウトプット課題"
+            description="各プロジェクトは、要件定義・設計・実装・レビュー・改善のサイクルを回すことで、現場で求められる思考とスピードを鍛えます。"
+          />
+          <div className="grid gap-8 md:grid-cols-3">
+            {projectShowcase.map(project => (
+              <Card key={project.title} className="border-slate-800/80 bg-slate-950/60">
+                <CardHeader className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">{project.title}</CardTitle>
+                    <Badge variant="secondary" className="bg-slate-800 text-slate-200">
+                      {project.level}
+                    </Badge>
                   </div>
-                  <div className="mt-3 flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => deleteUser(user.id)}>
-                      削除
-                    </Button>
+                  <CardDescription className="text-slate-300">{project.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">使用スタック</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.stack.map(item => (
+                      <Badge key={item} variant="outline" className="border-slate-700 bg-slate-900/60 text-slate-200">
+                        {item}
+                      </Badge>
+                    ))}
                   </div>
-                </div>
-              ))}
-              {getUsers().length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  登録ユーザーがいません
-                </div>
-              )}
-            </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* コード生成モーダル */}
-      {showCodeGenerator && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold">購入者コード生成</h3>
-              <Button variant="outline" onClick={() => setShowCodeGenerator(false)}>閉じる</Button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">新しい購入者コード</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={generatedCode}
-                    readOnly
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
-                    placeholder="コードを生成してください"
-                  />
-                  <Button onClick={() => navigator.clipboard.writeText(generatedCode)} disabled={!generatedCode}>
-                    コピー
-                  </Button>
+        <section id="toolchain" className="space-y-12">
+          <SectionHeader
+            eyebrow="Tools & Workflow"
+            title="実務と同じ開発環境・ワークフローで学ぶ"
+            description="現場で求められるリテラシーをそのまま身につけるため、ツールの設定や運用ガイドも丁寧に解説します。"
+          />
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="border-slate-800/80 bg-slate-950/60">
+              <CardHeader>
+                <CardTitle className="text-white">チーム開発を支えるコミュニケーション</CardTitle>
+                <CardDescription className="text-slate-300">
+                  Difyのワークスペース上でAIアシスタントと会話しながら課題を整理。レビュー依頼・進捗共有まで一貫して行えます。
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-slate-300">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="mt-1 size-4 text-sky-300" />
+                  <p>課題の分解と優先順位付けをAIと共に行い、作業設計の思考法を身につけます。</p>
                 </div>
-              </div>
-              <Button onClick={generatePurchaseCode} className="w-full">
-                新しいコードを生成
-              </Button>
-              <div className="text-sm text-gray-600">
-                生成されたコードは新規ユーザーの登録に使用できます。
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* コンテンツ管理モーダル */}
-      {showContentManager && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold">コンテンツ管理</h3>
-              <Button variant="outline" onClick={() => setShowContentManager(false)}>閉じる</Button>
-            </div>
-            <div className="space-y-6">
-              <div>
-                <h4 className="font-semibold mb-2">現在のコンテンツ</h4>
-                <div className="grid gap-2 text-sm">
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>PDFマニュアル</span>
-                    <span className="text-green-600">5ファイル</span>
+                <div className="flex items-start gap-3">
+                  <PenTool className="mt-1 size-4 text-sky-300" />
+                  <p>コードレビューでは、指摘の背景を言語化するトレーニングを実施。チーム開発のコミュニケーション力を強化します。</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Shield className="mt-1 size-4 text-sky-300" />
+                  <p>セキュリティと品質チェックの観点から、自動テストと静的解析の導入もサポート。</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-slate-800/80 bg-slate-950/60">
+              <CardHeader>
+                <CardTitle className="text-white">使用ツールとセットアップガイド</CardTitle>
+                <CardDescription className="text-slate-300">
+                  受講開始時に、ツールの設定テンプレートとおすすめ拡張機能をまとめたガイドを提供します。
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm">
+                {toolchain.map(tool => (
+                  <div key={tool.label} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+                    <p className="font-semibold text-white">{tool.label}</p>
+                    <p className="mt-1 text-slate-300">{tool.description}</p>
                   </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>DSLファイル</span>
-                    <span className="text-green-600">3ファイル</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>コミュニティ機能</span>
-                    <span className={communityEnabled ? 'text-green-600' : 'text-red-600'}>
-                      {communityEnabled ? '有効' : '無効'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">将来の機能</h4>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <div>• 新しいPDFマニュアルのアップロード</div>
-                  <div>• DSLファイルの追加・更新</div>
-                  <div>• コンテンツのバージョン管理</div>
-                  <div>• ユーザー別アクセス制御</div>
-                </div>
-              </div>
-            </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* サイトお知らせ */}
-      {siteAnnouncement && (
-        <div className="bg-blue-50 border-b border-blue-200">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center gap-2 text-blue-800">
-              <CheckCircle className="w-4 h-4" />
-              <span className="text-sm">{siteAnnouncement}</span>
-            </div>
+        <section id="testimonials" className="space-y-12">
+          <SectionHeader
+            eyebrow="Voices"
+            title="受講生の成長ストーリー"
+            description="受講前の課題から成果、今後のキャリアプランまで、学習の変化をリアルな声でご紹介します。"
+          />
+          <div className="grid gap-8 md:grid-cols-3">
+            {testimonials.map(testimonial => (
+              <Card key={testimonial.name} className="border-slate-800/80 bg-slate-950/60">
+                <CardHeader className="space-y-1">
+                  <CardTitle className="text-white">{testimonial.name}</CardTitle>
+                  <CardDescription className="text-slate-400">{testimonial.role}</CardDescription>
+                  <Badge className="w-fit bg-emerald-500/20 text-emerald-200">{testimonial.result}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-relaxed text-slate-300">{testimonial.quote}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </div>
-      )}
+        </section>
 
-      <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="manuals" className="w-full">
-          <TabsList className={`grid w-full ${communityEnabled ? 'grid-cols-3' : 'grid-cols-2'}`}>
-            <TabsTrigger value="manuals">マニュアル一覧</TabsTrigger>
-            <TabsTrigger value="apps">DSLファイル</TabsTrigger>
-            {communityEnabled && <TabsTrigger value="community">コミュニティ</TabsTrigger>}
-          </TabsList>
-
-          <TabsContent value="manuals" className="mt-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">マニュアル一覧</h2>
-              <p className="text-gray-600">世界最強レベルのDIFYマニュアルコレクション</p>
-            </div>
-
-            {/* トライアルユーザー向けコンテンツ */}
-            {currentUser?.type === 'trial' && (
-              <div className="mb-8">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <h3 className="text-lg font-semibold text-green-800 mb-2">
-                    🎉 トライアル限定コンテンツ
-                  </h3>
-                  <p className="text-green-700 text-sm">
-                    3日間の無料トライアル期間中にお楽しみいただけるコンテンツです。
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {trialContent.manuals.map((manual, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-shadow border-green-200">
-                      <CardHeader>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className={`w-12 h-12 ${manual.color} rounded-lg flex items-center justify-center text-white`}>
-                            {manual.icon}
-                          </div>
-                          <Badge variant="outline" className="bg-green-100 text-green-800">
-                            {manual.category}
-                          </Badge>
-                        </div>
-                        <CardTitle className="text-lg">{manual.title}</CardTitle>
-                        <CardDescription>{manual.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">ページ数:</span>
-                            <span className="font-medium">{manual.pages}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">対象レベル:</span>
-                            <span className="font-medium">{manual.level}</span>
-                          </div>
-                        </div>
-                        <Button 
-                          className="w-full bg-green-600 hover:bg-green-700"
-                          onClick={() => downloadFile(manual.filename, 'trial')}
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          PDFダウンロード
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
-                    💎 正規版で利用可能なコンテンツ
-                  </h3>
-                  <p className="text-blue-700 text-sm mb-3">
-                    正規版をご購入いただくと、以下の全コンテンツにアクセスできます。
-                  </p>
-                  <Button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => window.open('https://coconala.com', '_blank')}
+        <section id="pricing" className="space-y-12">
+          <SectionHeader
+            eyebrow="Pricing"
+            title="学習スタイルに合わせて選べる料金プラン"
+            description="いずれのプランでも、学習ダッシュボード・コミュニティ・ライブ講義の録画アーカイブは標準でご利用いただけます。"
+          />
+          <div className="grid gap-8 md:grid-cols-3">
+            {pricingPlans.map(plan => (
+              <Card
+                key={plan.title}
+                className={`flex flex-col border-slate-800/80 bg-slate-950/60 ${
+                  plan.highlighted ? 'ring-2 ring-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.15)]' : ''
+                }`}
+              >
+                <CardHeader className="space-y-3">
+                  <Badge
+                    className={`${
+                      plan.highlighted
+                        ? 'bg-sky-500 text-slate-950 hover:bg-sky-400'
+                        : 'bg-slate-800 text-slate-200'
+                    } w-fit`}
                   >
-                    正規版を購入する
+                    {plan.title}
+                  </Badge>
+                  <div>
+                    <CardTitle className="text-white">{plan.price}</CardTitle>
+                    <CardDescription className="text-slate-300">{plan.period}</CardDescription>
+                  </div>
+                  <p className="text-sm leading-relaxed text-slate-300">{plan.description}</p>
+                </CardHeader>
+                <CardContent className="mt-auto space-y-3 text-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">含まれるサービス</p>
+                  <ul className="space-y-2 text-slate-200">
+                    {plan.features.map(feature => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <div className="mt-1 size-1.5 rounded-full bg-sky-400" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <div className="px-6 pb-6">
+                  <Button
+                    className={`${plan.highlighted ? 'bg-sky-500 text-slate-950 hover:bg-sky-400' : 'bg-slate-800 text-white hover:bg-slate-700'} w-full`}
+                  >
+                    申し込む
                   </Button>
                 </div>
-              </div>
-            )}
+              </Card>
+            ))}
+          </div>
+        </section>
 
-            {/* 正規ユーザー向けコンテンツまたはトライアルユーザーのプレビュー */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {manuals.map((manual, index) => (
-                <Card 
-                  key={index} 
-                  className={`hover:shadow-lg transition-shadow ${
-                    currentUser?.type === 'trial' ? 'opacity-60' : ''
-                  }`}
-                >
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className={`w-12 h-12 ${manual.color} rounded-lg flex items-center justify-center text-white`}>
-                        {manual.icon}
-                      </div>
-                      <Badge variant="outline">{manual.category}</Badge>
-                    </div>
-                    <CardTitle className="text-lg">{manual.title}</CardTitle>
-                    <CardDescription>{manual.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">ページ数:</span>
-                        <span className="font-medium">{manual.pages}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">対象レベル:</span>
-                        <span className="font-medium">{manual.level}</span>
-                      </div>
-                    </div>
-                    <Button 
-                      className="w-full"
-                      onClick={() => downloadFile(manual.filename, 'manuals')}
-                      disabled={currentUser?.type === 'trial'}
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      {currentUser?.type === 'trial' ? '正規版限定' : 'PDFダウンロード'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+        <section id="faq" className="space-y-12">
+          <SectionHeader
+            eyebrow="FAQ"
+            title="よくあるご質問"
+            description="受講前に多くいただく質問をまとめました。詳細は個別相談でお気軽にお尋ねください。"
+          />
+          <Card className="border-slate-800/80 bg-slate-950/60">
+            <CardContent className="px-6 py-8">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map(faq => (
+                  <AccordionItem key={faq.question} value={faq.question} className="border-slate-800">
+                    <AccordionTrigger className="text-left text-base text-white">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-300">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+        </section>
 
-          <TabsContent value="apps" className="mt-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">DSLファイル</h2>
-              <p className="text-gray-600">すぐに使える実用DIFYアプリ</p>
-            </div>
+        <section id="cta" className="space-y-8 rounded-3xl border border-sky-500/40 bg-gradient-to-br from-sky-500/20 via-slate-950 to-slate-950 p-12 text-center">
+          <div className="mx-auto max-w-2xl space-y-4">
+            <Badge className="bg-sky-500 text-slate-950 hover:bg-sky-400">Next Step</Badge>
+            <h2 className="text-4xl font-semibold text-white">あなたの学習ゴールに合わせた最適なプランをご提案します</h2>
+            <p className="text-lg leading-relaxed text-slate-100/80">
+              事前カウンセリングでは、現状のスキル診断と学習計画のカスタマイズを行います。無料オリエンテーションの参加枠は毎週10名までです。
+            </p>
+          </div>
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-200">
+              無料カウンセリングを予約
+            </Button>
+            <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10">
+              資料をダウンロード
+            </Button>
+          </div>
+        </section>
+      </main>
 
-            {/* トライアルユーザー向けDSLコンテンツ */}
-            {currentUser?.type === 'trial' && (
-              <div className="mb-8">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <h3 className="text-lg font-semibold text-green-800 mb-2">
-                    🎉 トライアル限定DSLファイル
-                  </h3>
-                  <p className="text-green-700 text-sm">
-                    3日間の無料トライアル期間中にお試しいただけるサンプルDSLファイルです。
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {trialContent.dslFiles.map((dsl, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-shadow border-green-200">
-                      <CardHeader>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className={`w-12 h-12 ${dsl.color} rounded-lg flex items-center justify-center text-white`}>
-                            {dsl.icon}
-                          </div>
-                          <Badge variant="outline" className="bg-green-100 text-green-800">
-                            {dsl.category}
-                          </Badge>
-                        </div>
-                        <CardTitle className="text-lg">{dsl.title}</CardTitle>
-                        <CardDescription>{dsl.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">難易度:</span>
-                            <span className="font-medium">{dsl.difficulty}</span>
-                          </div>
-                        </div>
-                        <Button 
-                          className="w-full bg-green-600 hover:bg-green-700"
-                          onClick={() => downloadFile(dsl.filename, 'trial-dsl')}
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          DSLファイルダウンロード
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 正規ユーザー向けDSLコンテンツまたはトライアルユーザーのプレビュー */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {dslApps.map((app, index) => (
-                <Card 
-                  key={index} 
-                  className={`hover:shadow-lg transition-shadow ${
-                    currentUser?.type === 'trial' ? 'opacity-60' : ''
-                  }`}
-                >
-                  <CardHeader>
-                    <CardTitle className="text-lg">{app.name}</CardTitle>
-                    <CardDescription>{app.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 mb-4">
-                      {app.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      <Button 
-                        className="w-full"
-                        onClick={() => downloadFile(app.filename, 'dsl-files')}
-                        disabled={currentUser?.type === 'trial'}
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        {currentUser?.type === 'trial' ? '正規版限定' : 'DSLファイルダウンロード'}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => viewManual(app.manualFilename)}
-                        disabled={currentUser?.type === 'trial'}
-                      >
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        {currentUser?.type === 'trial' ? '正規版限定' : 'マニュアルを見る'}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {communityEnabled && (
-            <TabsContent value="community" className="mt-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">コミュニティ</h2>
-                <p className="text-gray-600">購入者限定の特別サポート</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      購入者限定コミュニティ
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">
-                      Slackワークスペースで他の購入者と情報交換、質問、共同開発が可能です。
-                    </p>
-                    <Button className="w-full">
-                      Slackに参加
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5" />
-                      個別コンサルティング
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">
-                      30分の無料個別コンサルティングで、あなたの課題を直接解決します。
-                    </p>
-                    <Button className="w-full">
-                      予約する
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="w-5 h-5" />
-                      月次ウェビナー
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">
-                      毎月開催される限定ウェビナーで最新のDIFY活用法を学べます。
-                    </p>
-                    <Button className="w-full">
-                      次回予定を確認
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Download className="w-5 h-5" />
-                      限定リソース
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">
-                      コミュニティメンバー限定のテンプレートやツールをダウンロードできます。
-                    </p>
-                    <Button className="w-full">
-                      リソースを見る
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          )}
-        </Tabs>
-      </div>
+      <footer className="border-t border-white/5 bg-slate-950/70">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="font-semibold text-white">Dify Mastery Portal - Python Edition</p>
+            <p className="mt-2">© {new Date().getFullYear()} Manus AI. All rights reserved.</p>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <a href="#tracks" className="hover:text-white">
+              カリキュラム
+            </a>
+            <a href="#projects" className="hover:text-white">
+              プロジェクト
+            </a>
+            <a href="#pricing" className="hover:text-white">
+              料金プラン
+            </a>
+            <a href="#faq" className="hover:text-white">
+              FAQ
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
 
 export default App
-
